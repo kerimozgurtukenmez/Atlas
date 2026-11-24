@@ -143,6 +143,8 @@ pub mod qobject {
         #[qproperty(*mut M3Palette, t_palette, cxx_name = "tPalette", READ = t_palette, CONSTANT)]
         #[qproperty(i32, style, READ, WRITE = set_style, NOTIFY = style_changed)]
         #[qproperty(bool, tty, READ, NOTIFY = tty_changed)]
+        // MochiFile: Cindy-Dots "mochi" stili acik mi (sticker cerceveler, keycap tuslar)
+        #[qproperty(bool, mochi, READ = is_mochi, NOTIFY = style_changed)]
         #[qproperty(bool, kiite_available, cxx_name = "kiiteAvailable", READ = kiite_available, CONSTANT)]
         #[qproperty(QString, nerd_family, cxx_name = "nerdFamily", READ, NOTIFY = tty_changed)]
         type Colours = super::ColoursRust;
@@ -156,6 +158,9 @@ pub mod qobject {
         #[qsignal]
         #[cxx_name = "ttyChanged"]
         fn tty_changed(self: Pin<&mut Colours>);
+
+        #[cxx_name = "isMochi"]
+        fn is_mochi(self: &Colours) -> bool;
 
         #[cxx_name = "isLight"]
         fn is_light(self: &Colours) -> bool;
@@ -198,6 +203,64 @@ const LIGHT: [&str; 36] = ["#fff8f8", "#22191c", "#fff8f8", "#e6dadc", "#fff8f8"
 /// `preferences/uiStyle`: follow KiiteShell's look, or pick one.
 const STYLE_FOLLOW_KIITE: i32 = 0;
 const STYLE_TTY: i32 = 2;
+/// MochiFile: Cindy-Dots "mochi" stili (varsayilan). Renkler Cindy-Dots semasindan.
+const STYLE_MOCHI: i32 = 3;
+const STYLE_MAX: i32 = 3;
+
+/// Cindy-Dots semasi: guncel (duvar kagidindan uretilen) ya da varsayilan.
+fn mochi_scheme_file() -> String {
+    format!("{}/cindy-dots/scheme.json", paths::cache_home())
+}
+
+fn mochi_default_scheme_file() -> String {
+    format!("{}/quickshell/assets/schemes/aquarium.json", paths::config_home())
+}
+
+/// Cindy-Dots rolu -> Material 3 rolu. Atlas'in her yuzeyi M3 rolleri okur.
+const MOCHI_ROLES: [(&str, &str); 36] = [
+    ("m3background", "surf"), ("m3onBackground", "ink"), ("m3surface", "card"), ("m3surfaceDim", "key"),
+    ("m3surfaceBright", "card"), ("m3surfaceContainerLowest", "card"), ("m3surfaceContainerLow", "surf"),
+    ("m3surfaceContainer", "surf"), ("m3surfaceContainerHigh", "key"), ("m3surfaceContainerHighest", "key"),
+    ("m3onSurface", "ink"), ("m3surfaceVariant", "key"), ("m3onSurfaceVariant", "muted"), ("m3inverseSurface", "ink"),
+    ("m3inverseOnSurface", "card"), ("m3outline", "ink"), ("m3outlineVariant", "hair"), ("m3shadow", "shadow"),
+    ("m3scrim", "ink"), ("m3surfaceTint", "primary"), ("m3primary", "primary"), ("m3onPrimary", "primaryFg"),
+    ("m3primaryContainer", "primaryC"), ("m3onPrimaryContainer", "primaryT"), ("m3secondary", "secondary"),
+    ("m3onSecondary", "ink"), ("m3secondaryContainer", "secondaryC"), ("m3onSecondaryContainer", "ink"),
+    ("m3tertiary", "tertiary"), ("m3onTertiary", "ink"), ("m3tertiaryContainer", "mintC"),
+    ("m3onTertiaryContainer", "tertiaryT"), ("m3error", "error"), ("m3onError", "card"),
+    ("m3errorContainer", "errorC"), ("m3onErrorContainer", "ink"),
+];
+
+/// Cindy-Dots semasini okur: {"mode": "light"|"dark", "colors": {rol: "#hex"}}.
+/// Once varsayilan, ustune guncel sema (eksik roller varsayilandan gelir).
+fn read_mochi_scheme() -> Option<Scheme> {
+    let read = |path: String| -> Option<serde_json::Map<String, Value>> {
+        let text = std::fs::read_to_string(path).ok()?;
+        let Value::Object(root) = serde_json::from_str::<Value>(&text).ok()? else { return None };
+        Some(root)
+    };
+    let mut roots: Vec<_> = [mochi_default_scheme_file(), mochi_scheme_file()].into_iter().filter_map(read).collect();
+    if roots.is_empty() {
+        return None;
+    }
+    let mut ours = std::collections::HashMap::new();
+    let mut light = true;
+    for root in roots.drain(..) {
+        if let Some(mode) = root.get("mode").and_then(Value::as_str) {
+            light = mode != "dark";
+        }
+        for (k, v) in root.get("colors").and_then(Value::as_object).into_iter().flatten() {
+            if let Some(rgba) = v.as_str().and_then(parse_hex) {
+                ours.insert(k.clone(), rgba);
+            }
+        }
+    }
+    let colours = MOCHI_ROLES
+        .iter()
+        .filter_map(|(m3, role)| Some((m3.to_string(), *ours.get(*role)?)))
+        .collect();
+    Some(Scheme { light, colours })
+}
 
 type Rgba = [u8; 4];
 
@@ -518,7 +581,7 @@ impl Default for ColoursRust {
     fn default() -> Self {
         Self {
             light: false,
-            style: settings::int("preferences/uiStyle", STYLE_FOLLOW_KIITE).clamp(0, 2),
+            style: settings::int("preferences/uiStyle", STYLE_MOCHI).clamp(0, STYLE_MAX),
             tty: false,
             nerd_family: QString::default(),
             palette: std::ptr::null_mut(),
@@ -533,8 +596,8 @@ fn pin<'a>(p: *mut M3Palette) -> Pin<&'a mut M3Palette> {
 }
 
 /// Files whose changes recolour or restyle Atlas while it runs.
-fn watched_files() -> [String; 3] {
-    [kiite_colors_file(), caelestia_scheme_file(), kiite_config_file()]
+fn watched_files() -> [String; 5] {
+    [kiite_colors_file(), caelestia_scheme_file(), kiite_config_file(), mochi_scheme_file(), mochi_default_scheme_file()]
 }
 
 impl cxx_qt::Initialize for Colours {
@@ -622,12 +685,18 @@ impl Colours {
         }
     }
 
+    fn is_mochi(&self) -> bool {
+        self.style == STYLE_MOCHI && !self.tty
+    }
+
     fn set_style(mut self: Pin<&mut Self>, style: i32) {
-        let style = style.clamp(0, 2);
+        let style = style.clamp(0, STYLE_MAX);
         if self.style != style {
             self.as_mut().rust_mut().style = style;
             settings::set_int("preferences/uiStyle", style);
             self.as_mut().style_changed();
+            // Stil degisince renk kaynagi da degisir (mochi: Cindy-Dots semasi)
+            self.as_mut().reload();
             self.apply_style();
         }
     }
@@ -655,9 +724,14 @@ impl Colours {
         self.light_changed();
     }
 
-    /// Loads KiiteShell's scheme, else Caelestia's.
+    /// Loads KiiteShell's scheme, else Caelestia's. MochiFile: mochi stilinde Cindy-Dots semasi.
     fn reload(mut self: Pin<&mut Self>) {
-        let Some(scheme) = read_kiite_scheme().or_else(read_caelestia_scheme) else { return };
+        let scheme = if self.style == STYLE_MOCHI {
+            read_mochi_scheme()
+        } else {
+            read_kiite_scheme().or_else(read_caelestia_scheme)
+        };
+        let Some(scheme) = scheme else { return };
         if self.light != scheme.light {
             self.as_mut().rust_mut().light = scheme.light;
             self.as_mut().light_changed();

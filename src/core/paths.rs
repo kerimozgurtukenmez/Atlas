@@ -27,6 +27,11 @@ pub fn config_home() -> String {
     xdg_base("XDG_CONFIG_HOME", ".config")
 }
 
+/// `QStandardPaths::GenericCacheLocation` (MochiFile: Cindy-Dots semasi burada).
+pub fn cache_home() -> String {
+    xdg_base("XDG_CACHE_HOME", ".cache")
+}
+
 /// Reads one `XDG_*_DIR` entry from user-dirs.dirs, like QStandardPaths does.
 pub fn user_dir(key: &str, fallback: &str) -> String {
     let file = format!("{}/user-dirs.dirs", config_home());
