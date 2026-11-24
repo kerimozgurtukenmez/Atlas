@@ -11,11 +11,24 @@ StyledRect {
     property bool expanded: false
     property int panelWidth: 260
     signal previewClicked(string path)
+    // MochiFile: alttaki eylem tuslari ("open", "openWith", "rename", "properties")
+    signal actionRequested(string action, var item)
 
-    implicitWidth: expanded ? panelWidth : 0
+    implicitWidth: expanded ? (Colours.mochi ? Tokens.mochi.previewWidth : panelWidth) : 0
     visible: width > 0
     clip: true
-    color: Colours.tPalette.m3surfaceContainer
+    color: Colours.mochi ? Colours.palette.m3surface : Colours.tPalette.m3surfaceContainer
+
+    // MochiFile: mochi'de sol kenarda ince ayirici
+    Rectangle {
+        visible: Colours.mochi
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: Tokens.mochi.hair
+        color: Colours.palette.m3outlineVariant
+        z: 5
+    }
 
     Behavior on implicitWidth {
         Anim {
@@ -43,6 +56,7 @@ StyledRect {
         visible: infoRow.modelData.visible !== false && infoRow.rowValue.length > 0
 
         StyledText {
+            visible: !Colours.mochi
             text: infoRow.rowLabel.endsWith(":") ? infoRow.rowLabel : infoRow.rowLabel + ":"
             color: Colours.palette.m3onSurfaceVariant
             font: Tokens.font.label.medium
@@ -50,10 +64,42 @@ StyledRect {
 
         StyledText {
             Layout.fillWidth: true
+            visible: !Colours.mochi
             text: infoRow.rowValue
             color: Colours.palette.m3onSurface
             font: Tokens.font.body.small
             wrapMode: Text.Wrap
+        }
+
+        // MochiFile: etiket solda, deger sagda, altta ince cizgi
+        RowLayout {
+            Layout.fillWidth: true
+            visible: Colours.mochi
+            spacing: Tokens.spacing.small
+
+            StyledText {
+                Layout.preferredWidth: infoRow.width * 0.38
+                text: infoRow.rowLabel.replace(/:$/, "")
+                color: Colours.palette.m3onSurfaceVariant
+                font: Tokens.font.label.builders.small.weight(Font.Black).build()
+                elide: Text.ElideRight
+            }
+
+            StyledText {
+                Layout.fillWidth: true
+                text: infoRow.rowValue
+                color: Colours.palette.m3onSurface
+                font: Tokens.font.label.builders.medium.weight(Font.Black).build()
+                wrapMode: Text.Wrap
+            }
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.topMargin: Tokens.spacing.extraSmall
+            visible: Colours.mochi
+            implicitHeight: Tokens.mochi.hair
+            color: Colours.palette.m3outlineVariant
         }
     }
 
@@ -67,6 +113,7 @@ StyledRect {
     Flickable {
         anchors.fill: parent
         anchors.margins: Tokens.padding.medium
+        anchors.bottomMargin: actionKeys.visible ? actionKeys.height + Tokens.padding.medium * 2 : Tokens.padding.medium
         anchors.topMargin: Colours.tty ? 26 : Tokens.padding.medium
         contentHeight: previewCol.implicitHeight
         clip: true
@@ -82,9 +129,17 @@ StyledRect {
             width: parent.width
             spacing: Tokens.spacing.medium
 
+            MochiTitle {
+                Layout.fillWidth: true
+                visible: Colours.mochi
+                jp: "プレビュー"
+                title: qsTr("Preview")
+            }
+
             // Header
             RowLayout {
                 Layout.fillWidth: true
+                visible: !Colours.mochi
                 spacing: Tokens.spacing.small
 
                 MaterialIcon {
@@ -104,10 +159,12 @@ StyledRect {
             // Image / Video / Icon Preview
             StyledRect {
                 Layout.fillWidth: true
-                implicitHeight: 200
-                radius: Tokens.rounding.medium
-                color: previewCardHover.containsMouse ? Colours.palette.m3surfaceContainerHighest : Colours.tPalette.m3surfaceContainerHigh
+                implicitHeight: Colours.mochi ? Tokens.mochi.previewHeight : 200
+                radius: Colours.mochi ? Tokens.mochi.itemRadius : Tokens.rounding.medium
+                color: Colours.mochi ? Colours.palette.m3surfaceContainerLow : (previewCardHover.containsMouse ? Colours.palette.m3surfaceContainerHighest : Colours.tPalette.m3surfaceContainerHigh)
                 clip: true
+                mochiLine: true
+                mochiBorder: Tokens.mochi.line
 
                 // Image & Video Preview (Full size)
                 Image {
@@ -170,8 +227,42 @@ StyledRect {
                     Layout.fillWidth: true
                     text: meta.name.length > 0 ? meta.name : qsTr("No Selection")
                     color: Colours.palette.m3onSurface
-                    font: Tokens.font.title.small
+                    font: Colours.mochi ? Tokens.font.title.builders.medium.family(Tokens.font.headline.small.family).build() : Tokens.font.title.small
                     wrapMode: Text.Wrap
+                }
+
+                // MochiFile: tur ve boyut cipleri
+                Flow {
+                    Layout.fillWidth: true
+                    Layout.topMargin: Tokens.spacing.small
+                    visible: Colours.mochi && meta.name.length > 0
+                    spacing: Tokens.spacing.small
+
+                    Repeater {
+                        model: [
+                            { text: meta.isDir ? "" : (meta.name.lastIndexOf(".") > 0 ? meta.name.substring(meta.name.lastIndexOf(".") + 1).toUpperCase() : ""), tone: 0 },
+                            { text: meta.isImage ? meta.imageDimensions : (meta.isVideo ? meta.videoDimensions : ""), tone: 1 },
+                            { text: (meta.isVideo || meta.isAudio) ? meta.durationFormatted : "", tone: 2 }
+                        ]
+
+                        StyledRect {
+                            required property var modelData
+                            visible: modelData.text.length > 0
+                            implicitHeight: Tokens.mochi.chipHeight
+                            implicitWidth: chipText.implicitWidth + Tokens.padding.medium * 2
+                            radius: height / 2
+                            mochiLine: true
+                            color: modelData.tone === 0 ? Colours.palette.m3primaryContainer : (modelData.tone === 2 ? Colours.palette.m3tertiaryContainer : Colours.palette.m3surface)
+
+                            StyledText {
+                                id: chipText
+                                anchors.centerIn: parent
+                                text: parent.modelData.text
+                                color: Colours.palette.m3onSurface
+                                font: Tokens.font.label.builders.medium.weight(Font.Black).build()
+                            }
+                        }
+                    }
                 }
 
                 StyledText {
@@ -199,7 +290,7 @@ StyledRect {
                 Layout.fillWidth: true
                 implicitHeight: 1
                 color: Colours.palette.m3outlineVariant
-                visible: meta.name.length > 0
+                visible: meta.name.length > 0 && !Colours.mochi
             }
 
             // Key-Value Metadata List
@@ -225,6 +316,37 @@ StyledRect {
                 model: meta.mediaDetails
 
                 InfoRow {}
+            }
+        }
+    }
+
+    // MochiFile: alt eylem tuslari
+    GridLayout {
+        id: actionKeys
+
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: Tokens.padding.medium
+        visible: Colours.mochi && meta.name.length > 0
+        columns: 4
+        columnSpacing: Tokens.spacing.small
+
+        Repeater {
+            model: [
+                { action: "open", icon: "open_in_new", label: qsTr("Open") },
+                { action: "openWith", icon: "apps", label: qsTr("Open with") },
+                { action: "rename", icon: "edit", label: qsTr("Rename") },
+                { action: "properties", icon: "info", label: qsTr("Properties") }
+            ]
+
+            MochiKeyButton {
+                required property var modelData
+                Layout.fillWidth: true
+                Layout.preferredWidth: 1
+                icon: modelData.icon
+                label: modelData.label
+                onClicked: root.actionRequested(modelData.action, { path: meta.path, name: meta.name, isDir: meta.isDir })
             }
         }
     }

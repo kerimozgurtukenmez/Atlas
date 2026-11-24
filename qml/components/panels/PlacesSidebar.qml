@@ -21,6 +21,16 @@ StyledRect {
     implicitWidth: sidebarWidth
     color: Colours.tPalette.m3surfaceContainer
 
+    // MochiFile: mochi'de sag kenarda ince ayirici
+    Rectangle {
+        visible: Colours.mochi
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: Tokens.mochi.hair
+        color: Colours.palette.m3outlineVariant
+    }
+
     // TTY: the whole sidebar is one box, its title where the header was
     TtyBox {
         anchors.fill: parent
@@ -46,10 +56,18 @@ StyledRect {
 
             StyledText {
                 anchors.centerIn: parent
-                visible: !Colours.tty
+                visible: !Colours.tty && !Colours.mochi
                 text: qsTr("Places")
                 color: Colours.palette.m3onSurface
                 font: Tokens.font.body.builders.large.weight(Font.Bold).build()
+            }
+
+            MochiSection {
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                visible: Colours.mochi
+                jp: "ばしょ"
+                title: qsTr("Places")
             }
 
             StyledRect {
@@ -121,7 +139,7 @@ StyledRect {
             ColumnLayout {
                 id: contentCol
                 width: flickable.width - Tokens.padding.medium
-                spacing: Tokens.spacing.small
+                spacing: Colours.mochi ? Tokens.spacing.extraSmall / 2 : Tokens.spacing.small
 
                 // Section 1: Local Places & Bookmarks
                 Repeater {
@@ -149,16 +167,18 @@ StyledRect {
                         )
 
                         Layout.fillWidth: true
-                        implicitHeight: visible ? (placeRow.implicitHeight + Tokens.padding.small * 2) : 0
+                        implicitHeight: visible ? (Colours.mochi ? Tokens.mochi.rowHeight : placeRow.implicitHeight + Tokens.padding.small * 2) : 0
 
-                        radius: Tokens.rounding.full
+                        radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.full
                         color: "transparent"
 
                         // Selection highlight
-                        Rectangle {
+                        StyledRect {
                             anchors.fill: parent
-                            radius: Tokens.rounding.full
-                            color: Colours.palette.m3secondaryContainer
+                            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.full
+                            mochiLine: true
+                            mochiShadow: Tokens.mochi.smallShadow
+                            color: Colours.mochi ? Colours.palette.m3primary : Colours.palette.m3secondaryContainer
                             opacity: placeItem.selected ? 1.0 : 0.0
                             Behavior on opacity {
                                 Anim { type: Anim.FastEffects }
@@ -168,7 +188,7 @@ StyledRect {
                         // Drag over highlight
                         Rectangle {
                             anchors.fill: parent
-                            radius: Tokens.rounding.full
+                            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.full
                             color: Colours.palette.m3primaryContainer
                             opacity: placeDropArea.containsDrag ? 1.0 : 0.0
                             Behavior on opacity {
@@ -211,16 +231,16 @@ StyledRect {
                             id: placeRow
 
                             anchors.fill: parent
-                            anchors.margins: Tokens.padding.small
+                            anchors.margins: Colours.mochi ? 0 : Tokens.padding.small
                             anchors.leftMargin: Tokens.padding.medium
                             anchors.rightMargin: Tokens.padding.medium
                             spacing: Tokens.spacing.medium
 
                             MaterialIcon {
                                 text: placeItem.iconName
-                                color: placeItem.selected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                                color: placeItem.selected ? (Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondaryContainer) : Colours.palette.m3onSurface
                                 pointSize: AppController.placesIconSize
-                                fill: placeItem.selected ? 1 : 0
+                                fill: placeItem.selected || Colours.mochi ? 1 : 0
 
                                 Behavior on color { CAnim {} }
                                 Behavior on fill { Anim { type: Anim.DefaultEffects } }
@@ -229,8 +249,8 @@ StyledRect {
                             StyledText {
                                 Layout.fillWidth: true
                                 text: placeItem.name
-                                color: placeItem.selected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
-                                font: Tokens.font.body.small
+                                color: placeItem.selected ? (Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondaryContainer) : Colours.palette.m3onSurface
+                                font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.small
                                 elide: Text.ElideRight
                             }
                         }
@@ -238,8 +258,8 @@ StyledRect {
                         StateLayer {
                             id: placeHover
                             anchors.fill: parent
-                            radius: Tokens.rounding.full
-                            color: placeItem.selected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.full
+                            color: placeItem.selected ? (Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondaryContainer) : Colours.palette.m3onSurface
                             acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
                             onClicked: mouse => {
@@ -280,9 +300,17 @@ StyledRect {
                         title: qsTr("network")
                     }
 
+                    MochiSection {
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: Colours.mochi
+                        jp: "ネット"
+                        title: qsTr("Network")
+                    }
+
                     StyledText {
                         anchors.centerIn: parent
-                        visible: !Colours.tty
+                        visible: !Colours.tty && !Colours.mochi
                         text: qsTr("Network")
                         color: Colours.palette.m3onSurface
                         font: Tokens.font.body.builders.large.weight(Font.Bold).build()
@@ -348,15 +376,17 @@ StyledRect {
                         )
 
                         Layout.fillWidth: true
-                        implicitHeight: visible ? (netRow.implicitHeight + Tokens.padding.small * 2) : 0
+                        implicitHeight: visible ? (Colours.mochi ? Tokens.mochi.rowHeight : netRow.implicitHeight + Tokens.padding.small * 2) : 0
 
-                        radius: Tokens.rounding.full
+                        radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.full
                         color: "transparent"
 
-                        Rectangle {
+                        StyledRect {
                             anchors.fill: parent
-                            radius: Tokens.rounding.full
-                            color: Colours.palette.m3secondaryContainer
+                            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.full
+                            mochiLine: true
+                            mochiShadow: Tokens.mochi.smallShadow
+                            color: Colours.mochi ? Colours.palette.m3primary : Colours.palette.m3secondaryContainer
                             opacity: netItem.selected ? 1.0 : 0.0
                             Behavior on opacity {
                                 Anim { type: Anim.FastEffects }
@@ -367,14 +397,14 @@ StyledRect {
                             id: netRow
 
                             anchors.fill: parent
-                            anchors.margins: Tokens.padding.small
+                            anchors.margins: Colours.mochi ? 0 : Tokens.padding.small
                             anchors.leftMargin: Tokens.padding.medium
                             anchors.rightMargin: Tokens.padding.medium
                             spacing: Tokens.spacing.medium
 
                             MaterialIcon {
                                 text: netItem.iconName || "cloud"
-                                color: netItem.selected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3primary
+                                color: netItem.selected ? (Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondaryContainer) : Colours.palette.m3primary
                                 pointSize: AppController.placesIconSize
                                 fill: netItem.selected ? 1 : 0
 
@@ -385,7 +415,7 @@ StyledRect {
                             StyledText {
                                 Layout.fillWidth: true
                                 text: netItem.name
-                                color: netItem.selected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                                color: netItem.selected ? (Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondaryContainer) : Colours.palette.m3onSurface
                                 font: Tokens.font.body.small
                                 elide: Text.ElideRight
                             }
@@ -394,8 +424,8 @@ StyledRect {
                         StateLayer {
                             id: netHover
                             anchors.fill: parent
-                            radius: Tokens.rounding.full
-                            color: netItem.selected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.full
+                            color: netItem.selected ? (Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondaryContainer) : Colours.palette.m3onSurface
                             acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
                             onClicked: mouse => {
@@ -427,11 +457,18 @@ StyledRect {
                     title: qsTr("devices")
                 }
 
+                MochiSection {
+                    Layout.topMargin: Tokens.spacing.medium
+                    visible: DriveManager.count > 0 && Colours.mochi
+                    jp: "ドライブ"
+                    title: qsTr("Devices")
+                }
+
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.topMargin: Tokens.spacing.medium
                     Layout.bottomMargin: Tokens.spacing.extraSmall
-                    visible: DriveManager.count > 0 && !Colours.tty
+                    visible: DriveManager.count > 0 && !Colours.tty && !Colours.mochi
                     text: qsTr("Devices")
                     color: Colours.palette.m3onSurface
                     font: Tokens.font.body.builders.large.weight(Font.Bold).build()
@@ -466,14 +503,16 @@ StyledRect {
                         Layout.fillWidth: true
                         implicitHeight: driveRow.implicitHeight + Tokens.padding.small * 2
 
-                        radius: Tokens.rounding.full
+                        radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.full
                         color: "transparent"
 
                         // Selection highlight
-                        Rectangle {
+                        StyledRect {
                             anchors.fill: parent
-                            radius: Tokens.rounding.full
-                            color: Colours.palette.m3secondaryContainer
+                            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.full
+                            mochiLine: true
+                            mochiShadow: Tokens.mochi.smallShadow
+                            color: Colours.mochi ? Colours.palette.m3primary : Colours.palette.m3secondaryContainer
                             opacity: driveItem.selected ? 1.0 : 0.0
                             Behavior on opacity {
                                 Anim { type: Anim.FastEffects }
@@ -483,7 +522,7 @@ StyledRect {
                         // Drag over highlight
                         Rectangle {
                             anchors.fill: parent
-                            radius: Tokens.rounding.full
+                            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.full
                             color: Colours.palette.m3primaryContainer
                             opacity: driveDropArea.containsDrag ? 1.0 : 0.0
                             Behavior on opacity {
@@ -533,9 +572,9 @@ StyledRect {
 
                             MaterialIcon {
                                 text: driveItem.isRemovable ? "usb" : "hard_drive"
-                                color: driveItem.selected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                                color: driveItem.selected ? (Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondaryContainer) : Colours.palette.m3onSurface
                                 pointSize: AppController.placesIconSize
-                                fill: driveItem.selected ? 1 : 0
+                                fill: driveItem.selected || Colours.mochi ? 1 : 0
 
                                 Behavior on color { CAnim {} }
                                 Behavior on fill { Anim { type: Anim.DefaultEffects } }
@@ -548,34 +587,46 @@ StyledRect {
                                 StyledText {
                                     Layout.fillWidth: true
                                     text: driveItem.name
-                                    color: driveItem.selected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
-                                    font: Tokens.font.body.small
+                                    color: driveItem.selected ? (Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondaryContainer) : Colours.palette.m3onSurface
+                                    font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.small
                                     elide: Text.ElideRight
                                 }
 
                                 // Visual Storage Bar
                                 StyledRect {
                                     Layout.fillWidth: true
-                                    implicitHeight: 4
+                                    implicitHeight: Colours.mochi ? Tokens.mochi.barHeight : 4
                                     radius: Tokens.rounding.full
-                                    color: Qt.alpha(Colours.palette.m3outline, 0.25)
-                                    clip: true
+                                    color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : Qt.alpha(Colours.palette.m3outline, 0.25)
+                                    clip: !Colours.mochi
+                                    mochiLine: true
                                     visible: driveItem.isMounted && driveItem.bytesTotal > 0
 
                                     Rectangle {
                                         anchors.left: parent.left
                                         anchors.top: parent.top
                                         anchors.bottom: parent.bottom
-                                        width: Math.max(4, parent.width * (driveItem.bytesTotal > 0 ? (driveItem.bytesTotal - driveItem.bytesFree) / driveItem.bytesTotal : 0))
+                                        anchors.margins: parent.border.width
+                                        width: Math.max(4, (parent.width - parent.border.width * 2) * (driveItem.bytesTotal > 0 ? (driveItem.bytesTotal - driveItem.bytesFree) / driveItem.bytesTotal : 0))
                                         radius: Tokens.rounding.full
                                         color: ((driveItem.bytesTotal - driveItem.bytesFree) / driveItem.bytesTotal) > 0.9
                                             ? Colours.palette.m3error
-                                            : (driveItem.selected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3primary)
+                                            : (driveItem.selected ? (Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3onSecondaryContainer) : Colours.palette.m3primary)
 
                                         Behavior on width {
                                             Anim { type: Anim.FastEffects }
                                         }
                                     }
+                                }
+
+                                // MochiFile: cubugun altinda dolu / toplam
+                                StyledText {
+                                    Layout.fillWidth: true
+                                    visible: Colours.mochi && driveItem.isMounted && driveItem.bytesTotal > 0
+                                    text: FileUtils.formatSize(driveItem.bytesTotal - driveItem.bytesFree) + " / " + FileUtils.formatSize(driveItem.bytesTotal)
+                                    color: driveItem.selected ? Colours.palette.m3onPrimary : Colours.palette.m3onSurfaceVariant
+                                    font: Tokens.font.label.builders.small.weight(Font.Black).build()
+                                    elide: Text.ElideRight
                                 }
 
                                 StyledText {
@@ -592,8 +643,8 @@ StyledRect {
                         StateLayer {
                             id: driveHover
                             anchors.fill: parent
-                            radius: Tokens.rounding.full
-                            color: driveItem.selected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.full
+                            color: driveItem.selected ? (Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondaryContainer) : Colours.palette.m3onSurface
                             acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
                             onClicked: mouse => {

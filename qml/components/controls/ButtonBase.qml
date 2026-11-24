@@ -39,17 +39,28 @@ StyledRect {
     property color disabledOnColour: Qt.alpha(Colours.palette.m3onSurface, 0.38)
 
     property bool internalChecked: false
-    readonly property color onColour: disabled ? disabledOnColour : (internalChecked ? activeOnColour : inactiveOnColour)
+    readonly property color onColour: disabled ? disabledOnColour : (mochiKeycap && !mochiPrimary ? Colours.palette.m3onSurface : (internalChecked ? activeOnColour : inactiveOnColour))
 
     property real pressedRadius: Tokens.rounding.small
     property real checkedRadius: Tokens.rounding.medium
     property real defaultRadius: Tokens.rounding.large
+
+    // MochiFile: mochi stilinde butonlar klavye tusu gibi. Ana eylem (Filled) ve
+    // secili toggle kendi rengiyle, digerleri tus zemini + murekkep yazi.
+    property bool mochiStyle: true
+    readonly property bool mochiKeycap: Colours.mochi && mochiStyle
+    readonly property bool mochiPrimary: isToggle ? internalChecked : type === ButtonBase.Filled
+
+    mochiKey: mochiStyle
+    mochiDown: pressed
 
     signal clicked()
 
     onCheckedChanged: internalChecked = checked
 
     radius: {
+        if (Colours.mochi && mochiStyle)
+            return isRound ? (implicitHeight || height) / 2 : Tokens.mochi.keyRadius;
         if (radiusMorph && pressed)
             return pressedRadius;
         if (internalChecked)
@@ -58,9 +69,11 @@ StyledRect {
             return (implicitHeight || height) / 2 * Math.min(1, Tokens.rounding.scale);
         return defaultRadius;
     }
-    color: type === ButtonBase.Text ? "transparent" : (disabled ? disabledColour : (internalChecked ? activeColour : inactiveColour))
-    border.width: type === ButtonBase.Outlined ? 1 : 0
-    border.color: type === ButtonBase.Outlined ? (disabled ? disabledColour : Colours.palette.m3outline) : "transparent"
+    color: mochiKeycap
+        ? (disabled ? disabledColour : (mochiPrimary ? (internalChecked ? activeColour : inactiveColour) : Colours.palette.m3surfaceContainerHigh))
+        : (type === ButtonBase.Text ? "transparent" : (disabled ? disabledColour : (internalChecked ? activeColour : inactiveColour)))
+    border.width: mochiActive ? mochiBorder : (type === ButtonBase.Outlined ? 1 : 0)
+    border.color: mochiActive ? mochiBorderColour : (type === ButtonBase.Outlined ? (disabled ? disabledColour : Colours.palette.m3outline) : "transparent")
 
     StateLayer {
         id: stateLayer

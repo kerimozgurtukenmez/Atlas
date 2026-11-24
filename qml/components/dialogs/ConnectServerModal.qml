@@ -91,9 +91,9 @@ MouseArea {
                 anchors.centerIn: parent
                 width: Math.min(parent.width - 32, 480)
                 height: Math.min(parent.height - 32, formCol.implicitHeight + headerRow.implicitHeight + actionRow.implicitHeight + (errorBanner.visible ? errorBanner.implicitHeight + Tokens.spacing.medium : 0) + Tokens.padding.large * 2 + Tokens.spacing.medium * 2)
-                radius: Tokens.rounding.large
+                radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
                 ttyFrame: true
-                color: Colours.palette.m3surfaceContainer
+                color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainer
 
                 scale: root.expanded ? 1.0 : 0.94
                 Behavior on scale {
@@ -128,7 +128,7 @@ MouseArea {
                         }
 
                         StyledText {
-                            text: qsTr("Connect to Server")
+                            text: (Colours.mochi ? "サーバー - " : "") + (qsTr("Connect to Server"))
                             font: Tokens.font.title.medium
                             color: Colours.palette.m3onSurface
                             Layout.fillWidth: true
@@ -218,10 +218,11 @@ MouseArea {
                                     }
 
                                     StyledRect {
+                                        mochiLine: true
                                         Layout.fillWidth: true
                                         implicitHeight: 38
                                         radius: Tokens.rounding.medium
-                                        color: Colours.tPalette.m3surfaceContainerHigh
+                                        color: Colours.mochi ? Colours.palette.m3surface : (Colours.tPalette.m3surfaceContainerHigh)
 
                                         TextInput {
                                             id: hostInput
@@ -255,10 +256,11 @@ MouseArea {
                                     }
 
                                     StyledRect {
+                                        mochiLine: true
                                         Layout.fillWidth: true
                                         implicitHeight: 38
                                         radius: Tokens.rounding.medium
-                                        color: Colours.tPalette.m3surfaceContainerHigh
+                                        color: Colours.mochi ? Colours.palette.m3surface : (Colours.tPalette.m3surfaceContainerHigh)
 
                                         TextInput {
                                             id: portInput
@@ -288,10 +290,11 @@ MouseArea {
                                 }
 
                                 StyledRect {
+                                    mochiLine: true
                                     Layout.fillWidth: true
                                     implicitHeight: 38
                                     radius: Tokens.rounding.medium
-                                    color: Colours.tPalette.m3surfaceContainerHigh
+                                    color: Colours.mochi ? Colours.palette.m3surface : (Colours.tPalette.m3surfaceContainerHigh)
 
                                     TextInput {
                                         id: userInput
@@ -326,10 +329,11 @@ MouseArea {
                                 }
 
                                 StyledRect {
+                                    mochiLine: true
                                     Layout.fillWidth: true
                                     implicitHeight: 38
                                     radius: Tokens.rounding.medium
-                                    color: Colours.tPalette.m3surfaceContainerHigh
+                                    color: Colours.mochi ? Colours.palette.m3surface : (Colours.tPalette.m3surfaceContainerHigh)
 
                                     TextInput {
                                         id: pathInput
@@ -358,11 +362,12 @@ MouseArea {
                                 }
 
                                 StyledRect {
+                                    mochiLine: true
                                     id: passRect
                                     Layout.fillWidth: true
                                     implicitHeight: 38
                                     radius: Tokens.rounding.medium
-                                    color: Colours.tPalette.m3surfaceContainerHigh
+                                    color: Colours.mochi ? Colours.palette.m3surface : (Colours.tPalette.m3surfaceContainerHigh)
                                     property bool showPass: false
 
                                     TextInput {

@@ -21,16 +21,18 @@ StyledRect {
     // TTY draws the status bar as a status line: text segments split by │,
     // with the accent inverted at its end
     readonly property string sep: Colours.tty ? "│  " : "•  "
+    // MochiFile: mochi'de durum yazisi kalin
+    readonly property font statusFont: Colours.mochi ? Tokens.font.label.builders.large.weight(Font.Black).build() : Tokens.font.label.medium
 
-    implicitHeight: statusRow.implicitHeight + Tokens.padding.extraSmall * 2
+    implicitHeight: Colours.mochi ? Math.max(Tokens.mochi.statusHeight, statusRow.implicitHeight) : statusRow.implicitHeight + Tokens.padding.extraSmall * 2
     color: Colours.tty ? Colours.palette.m3surfaceContainerHigh : Colours.tPalette.m3surfaceContainer
 
     Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 1
-        visible: Colours.tty
+        height: Colours.mochi ? Tokens.mochi.hair : 1
+        visible: Colours.tty || Colours.mochi
         color: Colours.palette.m3outlineVariant
     }
 
@@ -61,7 +63,7 @@ StyledRect {
         StyledText {
             text: root.activeModel ? qsTr("%1 items").arg(root.activeModel.count) : ""
             color: Colours.palette.m3onSurfaceVariant
-            font: Tokens.font.label.medium
+            font: root.statusFont
         }
 
         // Directory Size
@@ -69,7 +71,7 @@ StyledRect {
             visible: root.activeModel && root.activeModel.directorySizeFormatted.length > 0
             text: root.activeModel ? root.sep + qsTr("%1 total").arg(root.activeModel.directorySizeFormatted) : ""
             color: Colours.palette.m3onSurfaceVariant
-            font: Tokens.font.label.medium
+            font: root.statusFont
         }
 
         // Selected summary
@@ -83,7 +85,7 @@ StyledRect {
                 return root.sep + qsTr("%1 selected%2").arg(root.selectedCount).arg(size);
             }
             color: Colours.palette.m3primary
-            font: Tokens.font.label.medium
+            font: root.statusFont
             elide: Text.ElideMiddle
         }
 
@@ -96,7 +98,7 @@ StyledRect {
                 return free.length > 0 ? root.sep + qsTr("%1 free").arg(free) : "";
             }
             color: Colours.palette.m3onSurfaceVariant
-            font: Tokens.font.label.medium
+            font: root.statusFont
         }
 
         Item {

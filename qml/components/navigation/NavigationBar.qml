@@ -92,6 +92,8 @@ StyledRect {
     }
 
     signal togglePreview()
+    // MochiFile: onizleme tusu basili gorunsun diye
+    property bool previewOpen: false
     signal toggleTerminal()
     signal createNewFolder()
     signal createNewFile()
@@ -101,8 +103,8 @@ StyledRect {
     signal preferencesRequested()
     signal specialProtocolInvoked(int protocolId)
 
-    implicitHeight: 48
-    color: Colours.tPalette.m3surfaceContainer
+    implicitHeight: Colours.mochi ? Tokens.mochi.navBarHeight : 48
+    color: Colours.mochi ? Colours.palette.m3surface : Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.large
     z: (root.isEditingPath && root.showSuggestions) ? 500 : 10
 
@@ -147,13 +149,16 @@ StyledRect {
 
         // Back Button
         Item {
-            implicitWidth: 32
-            implicitHeight: 32
+            implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 32
+            implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 32
 
             StyledRect {
                 anchors.fill: parent
-                radius: Tokens.rounding.full
-                color: (root.activeTab && root.activeTab.canGoBack && backHover.containsMouse) ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0)
+                radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                mochiKey: true
+                mochiDown: backHover.pressed
+                opacity: Colours.mochi && !(root.activeTab && root.activeTab.canGoBack) ? 0.4 : 1
+                color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : ((root.activeTab && root.activeTab.canGoBack && backHover.containsMouse) ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0))
 
                 MaterialIcon {
                     anchors.centerIn: parent
@@ -179,13 +184,16 @@ StyledRect {
 
         // Forward Button
         Item {
-            implicitWidth: 32
-            implicitHeight: 32
+            implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 32
+            implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 32
 
             StyledRect {
                 anchors.fill: parent
-                radius: Tokens.rounding.full
-                color: (root.activeTab && root.activeTab.canGoForward && fwdHover.containsMouse) ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0)
+                radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                mochiKey: true
+                mochiDown: fwdHover.pressed
+                opacity: Colours.mochi && !(root.activeTab && root.activeTab.canGoForward) ? 0.4 : 1
+                color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : ((root.activeTab && root.activeTab.canGoForward && fwdHover.containsMouse) ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0))
 
                 MaterialIcon {
                     anchors.centerIn: parent
@@ -211,13 +219,16 @@ StyledRect {
 
         // Up Button
         Item {
-            implicitWidth: 32
-            implicitHeight: 32
+            implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 32
+            implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 32
 
             StyledRect {
                 anchors.fill: parent
-                radius: Tokens.rounding.full
-                color: upHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0)
+                radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                mochiKey: true
+                mochiDown: upHover.pressed
+                opacity: Colours.mochi && !true ? 0.4 : 1
+                color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (upHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0))
 
                 MaterialIcon {
                     anchors.centerIn: parent
@@ -244,13 +255,13 @@ StyledRect {
         // Path & Breadcrumbs Bar / Search Bar
         StyledRect {
             Layout.fillWidth: true
-            implicitHeight: 30
+            implicitHeight: Colours.mochi ? Tokens.mochi.pathHeight : 30
             z: (root.isEditingPath && root.showSuggestions) ? 500 : 1
 
             radius: Tokens.rounding.full
-            color: Colours.tPalette.m3surfaceContainerHigh
-            border.color: (root.isEditingPath || root.isSearching) ? Colours.palette.m3primary : Qt.alpha(Colours.palette.m3primary, 0)
-            border.width: (root.isEditingPath || root.isSearching) ? 1.5 : 0
+            color: Colours.mochi ? Colours.palette.m3surfaceContainerLow : Colours.tPalette.m3surfaceContainerHigh
+            border.color: Colours.mochi ? ((root.isEditingPath || root.isSearching) ? Colours.palette.m3primary : Colours.palette.m3outline) : ((root.isEditingPath || root.isSearching) ? Colours.palette.m3primary : Qt.alpha(Colours.palette.m3primary, 0))
+            border.width: Colours.mochi ? Tokens.mochi.line : ((root.isEditingPath || root.isSearching) ? 1.5 : 0)
 
             // Normal Breadcrumbs Mode
             Flickable {
@@ -326,10 +337,12 @@ StyledRect {
                             readonly property bool isActiveSegment: crumb.index === (breadcrumbRepeater.count - 1)
 
                             StyledRect {
-                                implicitHeight: 22
-                                implicitWidth: crumbContent.implicitWidth + Tokens.padding.small * 2
+                                implicitHeight: Colours.mochi ? Tokens.mochi.crumbHeight : 22
+                                implicitWidth: crumbContent.implicitWidth + (Colours.mochi ? Tokens.padding.medium : Tokens.padding.small) * 2
                                 radius: Tokens.rounding.full
-                                color: crumbMouse.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0)
+                                mochiLine: true
+                                mochiBorderColour: crumb.isActiveSegment ? Colours.palette.m3outline : Colours.palette.m3outlineVariant
+                                color: Colours.mochi ? (crumb.isActiveSegment ? Colours.palette.m3primary : (crumbMouse.containsMouse ? Colours.palette.m3surfaceContainerHigh : Colours.palette.m3surface)) : (crumbMouse.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0))
 
                                 MouseArea {
                                     id: crumbMouse
@@ -359,13 +372,13 @@ StyledRect {
                                         text: crumb.modelData.icon
                                         fill: 1
                                         fontStyle: Tokens.font.icon.small
-                                        color: crumb.isActiveSegment ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
+                                        color: Colours.mochi ? (crumb.isActiveSegment ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface) : (crumb.isActiveSegment ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant)
                                     }
 
                                     StyledText {
                                         text: crumb.modelData.name
-                                        color: crumb.isActiveSegment ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
-                                        font: Tokens.font.body.builders.small.weight(Font.Bold).build()
+                                        color: Colours.mochi ? (crumb.isActiveSegment ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface) : (crumb.isActiveSegment ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant)
+                                        font: Tokens.font.body.builders.small.weight(Colours.mochi ? Font.Black : Font.Bold).build()
                                     }
                                 }
                             }
@@ -374,7 +387,14 @@ StyledRect {
                                 text: "/"
                                 color: Colours.palette.m3onSurfaceVariant
                                 font: Tokens.font.body.builders.small.weight(Font.Bold).build()
-                                visible: crumb.index < (breadcrumbRepeater.count - 1)
+                                visible: !Colours.mochi && crumb.index < (breadcrumbRepeater.count - 1)
+                            }
+
+                            MaterialIcon {
+                                text: "chevron_right"
+                                color: Colours.palette.m3onSurfaceVariant
+                                fontStyle: Tokens.font.icon.small
+                                visible: Colours.mochi && crumb.index < (breadcrumbRepeater.count - 1)
                             }
                         }
                     }
@@ -804,18 +824,20 @@ StyledRect {
 
         // Search Toggle Button
         Item {
-            implicitWidth: 32
-            implicitHeight: 32
+            implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 32
+            implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 32
 
             StyledRect {
                 anchors.fill: parent
-                radius: Tokens.rounding.full
-                color: root.isSearching ? Colours.palette.m3primaryContainer : (searchHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0))
+                radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                mochiKey: true
+                mochiDown: searchHover.pressed || root.isSearching
+                color: Colours.mochi ? (root.isSearching ? Colours.palette.m3primary : Colours.palette.m3surfaceContainerHigh) : (root.isSearching ? Colours.palette.m3primaryContainer : (searchHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0)))
 
                 MaterialIcon {
                     anchors.centerIn: parent
                     text: "search"
-                    color: root.isSearching ? Colours.palette.m3onPrimaryContainer : Colours.palette.m3onSurface
+                    color: Colours.mochi ? (root.isSearching ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface) : (root.isSearching ? Colours.palette.m3onPrimaryContainer : Colours.palette.m3onSurface)
                     fontStyle: Tokens.font.icon.small
                 }
 
@@ -843,7 +865,7 @@ StyledRect {
         // Empty Trash Button
         Item {
             implicitWidth: emptyTrashContent.implicitWidth + 24
-            implicitHeight: 32
+            implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 32
             visible: {
                 if (!root.activeTab) return false;
                 let p = (root.activePane === 1 && root.activeTab.isSplit) ? root.activeTab.splitPath : root.activeTab.currentPath;
@@ -852,8 +874,10 @@ StyledRect {
 
             StyledRect {
                 anchors.fill: parent
-                radius: Tokens.rounding.full
-                color: emptyHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0)
+                radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                mochiKey: true
+                mochiDown: emptyHover.pressed
+                color: Colours.mochi ? Colours.palette.m3errorContainer : emptyHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0)
 
                 RowLayout {
                     id: emptyTrashContent
@@ -890,29 +914,34 @@ StyledRect {
 
         // View Mode Switcher
         StyledRect {
-            implicitHeight: 32
-            implicitWidth: 32 * 3 + 4
-            radius: Tokens.rounding.full
+            implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 32
+            implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth * 3 + Tokens.padding.extraSmall * 2 + Tokens.spacing.extraSmall * 2 : 32 * 3 + 4
+            radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
             color: Colours.tPalette.m3surfaceContainerHigh
+            mochiLine: true
+            mochiBorderColour: Colours.palette.m3outlineVariant
 
             RowLayout {
                 anchors.fill: parent
-                spacing: 0
+                anchors.margins: Colours.mochi ? Tokens.padding.extraSmall : 0
+                spacing: Colours.mochi ? Tokens.spacing.extraSmall : 0
 
                 // Grid View
                 Item {
-                    implicitWidth: 32
-                    implicitHeight: 32
+                    implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth - Tokens.padding.extraSmall : 32
+                    implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight - Tokens.padding.extraSmall * 2 : 32
 
                     StyledRect {
+                        mochiLine: (root.activeTab && root.activeTab.viewMode === 0)
+                        mochiShadow: Colours.mochi && (root.activeTab && root.activeTab.viewMode === 0) ? Tokens.mochi.smallShadow - 1 : 0
                         anchors.fill: parent
-                        radius: Tokens.rounding.full
-                        color: (root.activeTab && root.activeTab.viewMode === 0) ? Colours.palette.m3secondaryContainer : (gridHover.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : Qt.alpha(Colours.palette.m3secondaryContainer, 0))
+                        radius: Colours.mochi ? Tokens.mochi.rowRadius - 2 : Tokens.rounding.full
+                        color: Colours.mochi ? ((root.activeTab && root.activeTab.viewMode === 0) ? Colours.palette.m3primary : "transparent") : ((root.activeTab && root.activeTab.viewMode === 0) ? Colours.palette.m3secondaryContainer : (gridHover.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : Qt.alpha(Colours.palette.m3secondaryContainer, 0)))
 
                         MaterialIcon {
                             anchors.centerIn: parent
                             text: "grid_view"
-                            color: (root.activeTab && root.activeTab.viewMode === 0) ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant
+                            color: Colours.mochi ? ((root.activeTab && root.activeTab.viewMode === 0) ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface) : ((root.activeTab && root.activeTab.viewMode === 0) ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant)
                             fontStyle: Tokens.font.icon.small
                         }
 
@@ -933,18 +962,20 @@ StyledRect {
 
                 // Details / List View
                 Item {
-                    implicitWidth: 32
-                    implicitHeight: 32
+                    implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth - Tokens.padding.extraSmall : 32
+                    implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight - Tokens.padding.extraSmall * 2 : 32
 
                     StyledRect {
+                        mochiLine: (root.activeTab && root.activeTab.viewMode === 1)
+                        mochiShadow: Colours.mochi && (root.activeTab && root.activeTab.viewMode === 1) ? Tokens.mochi.smallShadow - 1 : 0
                         anchors.fill: parent
-                        radius: Tokens.rounding.full
-                        color: (root.activeTab && root.activeTab.viewMode === 1) ? Colours.palette.m3secondaryContainer : (listHover.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : Qt.alpha(Colours.palette.m3secondaryContainer, 0))
+                        radius: Colours.mochi ? Tokens.mochi.rowRadius - 2 : Tokens.rounding.full
+                        color: Colours.mochi ? ((root.activeTab && root.activeTab.viewMode === 1) ? Colours.palette.m3primary : "transparent") : ((root.activeTab && root.activeTab.viewMode === 1) ? Colours.palette.m3secondaryContainer : (listHover.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : Qt.alpha(Colours.palette.m3secondaryContainer, 0)))
 
                         MaterialIcon {
                             anchors.centerIn: parent
                             text: "view_list"
-                            color: (root.activeTab && root.activeTab.viewMode === 1) ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant
+                            color: Colours.mochi ? ((root.activeTab && root.activeTab.viewMode === 1) ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface) : ((root.activeTab && root.activeTab.viewMode === 1) ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant)
                             fontStyle: Tokens.font.icon.small
                         }
 
@@ -965,18 +996,20 @@ StyledRect {
 
                 // Compact View
                 Item {
-                    implicitWidth: 32
-                    implicitHeight: 32
+                    implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth - Tokens.padding.extraSmall : 32
+                    implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight - Tokens.padding.extraSmall * 2 : 32
 
                     StyledRect {
+                        mochiLine: (root.activeTab && root.activeTab.viewMode === 2)
+                        mochiShadow: Colours.mochi && (root.activeTab && root.activeTab.viewMode === 2) ? Tokens.mochi.smallShadow - 1 : 0
                         anchors.fill: parent
-                        radius: Tokens.rounding.full
-                        color: (root.activeTab && root.activeTab.viewMode === 2) ? Colours.palette.m3secondaryContainer : (compactHover.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : Qt.alpha(Colours.palette.m3secondaryContainer, 0))
+                        radius: Colours.mochi ? Tokens.mochi.rowRadius - 2 : Tokens.rounding.full
+                        color: Colours.mochi ? ((root.activeTab && root.activeTab.viewMode === 2) ? Colours.palette.m3primary : "transparent") : ((root.activeTab && root.activeTab.viewMode === 2) ? Colours.palette.m3secondaryContainer : (compactHover.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : Qt.alpha(Colours.palette.m3secondaryContainer, 0)))
 
                         MaterialIcon {
                             anchors.centerIn: parent
                             text: "view_compact"
-                            color: (root.activeTab && root.activeTab.viewMode === 2) ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant
+                            color: Colours.mochi ? ((root.activeTab && root.activeTab.viewMode === 2) ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface) : ((root.activeTab && root.activeTab.viewMode === 2) ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant)
                             fontStyle: Tokens.font.icon.small
                         }
 
@@ -1000,18 +1033,20 @@ StyledRect {
 
         // Info / Preview Toggle
         Item {
-            implicitWidth: 32
-            implicitHeight: 32
+            implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 32
+            implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 32
 
             StyledRect {
                 anchors.fill: parent
-                radius: Tokens.rounding.full
-                color: infoHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0)
+                radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                mochiKey: true
+                mochiDown: infoHover.pressed || root.previewOpen
+                color: Colours.mochi ? (root.previewOpen ? Colours.palette.m3primary : Colours.palette.m3surfaceContainerHigh) : (infoHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0))
 
                 MaterialIcon {
                     anchors.centerIn: parent
-                    text: "info"
-                    color: Colours.palette.m3onSurface
+                    text: Colours.mochi ? "right_panel_open" : "info"
+                    color: Colours.mochi && root.previewOpen ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
                     fontStyle: Tokens.font.icon.small
                 }
 
@@ -1032,13 +1067,15 @@ StyledRect {
 
         // Settings / Preferences
         Item {
-            implicitWidth: 32
-            implicitHeight: 32
+            implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 32
+            implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 32
 
             StyledRect {
                 anchors.fill: parent
-                radius: Tokens.rounding.full
-                color: prefsHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0)
+                radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                mochiKey: true
+                mochiDown: prefsHover.pressed || false
+                color: Colours.mochi ? (false ? Colours.palette.m3primary : Colours.palette.m3surfaceContainerHigh) : (prefsHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Qt.alpha(Colours.tPalette.m3surfaceContainerHighest, 0))
 
 
                 MaterialIcon {

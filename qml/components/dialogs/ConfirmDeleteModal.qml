@@ -68,9 +68,9 @@ MouseArea {
                 implicitWidth: Math.min(parent.width - 48, 440)
                 implicitHeight: modalCol.implicitHeight + Tokens.padding.large * 2
 
-                radius: Tokens.rounding.large
+                radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
                 ttyFrame: true
-                color: Colours.palette.m3surfaceContainerHigh
+                color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerHigh
 
                 scale: root.expanded ? 1.0 : 0.94
 
@@ -105,9 +105,10 @@ MouseArea {
 
                         StyledText {
                             Layout.fillWidth: true
-                            text: root.permanent ? qsTr("Delete permanently") : qsTr("Move to trash")
+                            text: (Colours.mochi ? "ほんとに消す？ - " : "") + (root.permanent ? qsTr("Delete permanently") : qsTr("Move to trash"))
                             color: Colours.palette.m3onSurface
                             font: Tokens.font.title.medium
+                            wrapMode: Text.Wrap
                         }
                     }
 
@@ -145,10 +146,11 @@ MouseArea {
 
                         TextButton {
                             type: ButtonBase.Filled
-                            activeColour: root.permanent ? Colours.palette.m3error : Colours.palette.m3primary
-                            activeOnColour: root.permanent ? Colours.palette.m3onError : Colours.palette.m3onPrimary
-                            inactiveColour: root.permanent ? Colours.palette.m3error : Colours.palette.m3primary
-                            inactiveOnColour: root.permanent ? Colours.palette.m3onError : Colours.palette.m3onPrimary
+                            // MochiFile: mochi'de kalici sil acik kirmizi tus + murekkep yazi
+                            activeColour: root.permanent ? (Colours.mochi ? Colours.palette.m3errorContainer : Colours.palette.m3error) : Colours.palette.m3primary
+                            activeOnColour: root.permanent ? (Colours.mochi ? Colours.palette.m3onErrorContainer : Colours.palette.m3onError) : Colours.palette.m3onPrimary
+                            inactiveColour: root.permanent ? (Colours.mochi ? Colours.palette.m3errorContainer : Colours.palette.m3error) : Colours.palette.m3primary
+                            inactiveOnColour: root.permanent ? (Colours.mochi ? Colours.palette.m3onErrorContainer : Colours.palette.m3onError) : Colours.palette.m3onPrimary
                             text: root.permanent ? qsTr("Delete") : qsTr("Move to Trash")
                             onClicked: root.accept()
                         }

@@ -170,7 +170,7 @@ MouseArea {
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: qsTr("Assign Shortcut")
+                    text: (Colours.mochi ? "キー - " : "") + (qsTr("Assign Shortcut"))
                     color: Colours.palette.m3onSurface
                     font: Tokens.font.title.medium
                 }

@@ -123,9 +123,9 @@ Item {
         anchors.centerIn: parent
         width: Math.min(parent.width - 48, 480)
         implicitHeight: boxContent.implicitHeight + 64
-        radius: Tokens.rounding.extraLarge
+        radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.extraLarge
         ttyFrame: true
-        color: Colours.palette.m3surfaceContainerHigh
+        color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerHigh
 
         scale: root.isOpen ? 1 : 0.88
 

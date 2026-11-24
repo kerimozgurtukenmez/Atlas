@@ -128,13 +128,14 @@ StyledRect {
     signal itemOpened(var item, int pane)
     signal itemOpenedInNewTab(var item)
 
-    color: Colours.tPalette.m3surfaceContainer
+    color: Colours.mochi && !root.isSplit ? Colours.palette.m3surface : Colours.tPalette.m3surfaceContainer
 
     Item {
         anchors.fill: parent
-        anchors.margins: Tokens.padding.extraSmall
+        // MochiFile: tek bolme duz (kenarsiz), bolunmusken kart kart
+        anchors.margins: Colours.mochi ? (root.isSplit ? Tokens.padding.medium : 0) : Tokens.padding.extraSmall
         // room for the TTY boxes' titles, which rise above their top edge
-        anchors.topMargin: Colours.tty ? 12 : Tokens.padding.extraSmall
+        anchors.topMargin: Colours.tty ? 12 : (Colours.mochi ? (root.isSplit ? Tokens.padding.medium : 0) : Tokens.padding.extraSmall)
 
         // Left / Main Pane
         StyledRect {
@@ -144,9 +145,23 @@ StyledRect {
             anchors.bottom: parent.bottom
             width: root.isSplit ? Math.max(120, Math.min(parent.width - 120, (parent.width - resizer.width) * root.splitRatio)) : parent.width
 
-            radius: Tokens.rounding.large
+            radius: Colours.mochi ? (root.isSplit ? Tokens.mochi.itemRadius : 0) : Tokens.rounding.large
             color: Colours.tPalette.m3surface
             clip: true
+            border.width: Colours.mochi && root.isSplit ? (root.activePane === 0 ? Tokens.mochi.line : Tokens.mochi.thin) : 0
+            border.color: root.activePane === 0 ? Colours.palette.m3primary : Colours.palette.m3outlineVariant
+
+            MochiPaneHeader {
+                id: pane1Header
+                visible: Colours.mochi && root.isSplit
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: parent.border.width
+                z: 20
+                active: root.activePane === 0
+                path: root.activeTab ? root.activeTab.currentPath : ""
+            }
 
             // Active Pane Low-Profile Top Accent Bar
             Rectangle {
@@ -159,7 +174,7 @@ StyledRect {
                 height: 3
                 radius: 1.5
                 color: Colours.palette.m3primary
-                visible: root.isSplit && root.activePane === 0 && !Colours.tty
+                visible: root.isSplit && root.activePane === 0 && !Colours.tty && !Colours.mochi
                 z: 20
                 opacity: 0.95
             }
@@ -181,6 +196,8 @@ StyledRect {
             Loader {
                 id: mainViewLoader
                 anchors.fill: parent
+                anchors.margins: parent.border.width
+                anchors.topMargin: pane1Header.visible ? pane1Header.height + parent.border.width : parent.border.width
 
                 sourceComponent: {
                     let mode = root.activeTab ? root.activeTab.viewMode : 0;
@@ -227,6 +244,7 @@ StyledRect {
                 height: parent.height - 16
                 radius: 1
                 color: Colours.palette.m3primary
+                visible: !Colours.mochi
                 opacity: (resizeMouse.containsMouse || resizeMouse.drag.active) ? 1.0 : 0.65
 
                 Behavior on opacity { Anim { type: Anim.FastEffects } }
@@ -268,9 +286,23 @@ StyledRect {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
 
-            radius: Tokens.rounding.large
+            radius: Colours.mochi ? (root.isSplit ? Tokens.mochi.itemRadius : 0) : Tokens.rounding.large
             color: Colours.tPalette.m3surface
             clip: true
+            border.width: Colours.mochi && root.isSplit ? (root.activePane === 1 ? Tokens.mochi.line : Tokens.mochi.thin) : 0
+            border.color: root.activePane === 1 ? Colours.palette.m3primary : Colours.palette.m3outlineVariant
+
+            MochiPaneHeader {
+                id: pane2Header
+                visible: Colours.mochi && root.isSplit
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: parent.border.width
+                z: 20
+                active: root.activePane === 1
+                path: (root.activeTab && root.activeTab.splitPath) ? root.activeTab.splitPath : ""
+            }
 
             // Active Pane Low-Profile Top Accent Bar
             Rectangle {
@@ -283,7 +315,7 @@ StyledRect {
                 height: 3
                 radius: 1.5
                 color: Colours.palette.m3primary
-                visible: root.isSplit && root.activePane === 1 && !Colours.tty
+                visible: root.isSplit && root.activePane === 1 && !Colours.tty && !Colours.mochi
                 z: 20
                 opacity: 0.95
             }
@@ -305,6 +337,8 @@ StyledRect {
             Loader {
                 id: splitViewLoader
                 anchors.fill: parent
+                anchors.margins: parent.border.width
+                anchors.topMargin: pane2Header.visible ? pane2Header.height + parent.border.width : parent.border.width
 
                 sourceComponent: {
                     let mode = root.activeTab ? root.activeTab.viewMode : 0;

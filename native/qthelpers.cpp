@@ -79,6 +79,10 @@ void setTtyTokens(bool tty, const QString& preferredMono) {
     atlas::config::TokensSingleton::instance()->setTty(tty, preferredMono);
 }
 
+void setMochiTokens(bool mochi) {
+    atlas::config::TokensSingleton::instance()->setMochi(mochi);
+}
+
 QStringList fontFamilies() {
     return QFontDatabase::families();
 }

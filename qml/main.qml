@@ -142,6 +142,7 @@ ApplicationWindow {
                             }
                         }
 
+                        previewOpen: previewPanel.expanded
                         onTogglePreview: {
                             previewPanel.expanded = !previewPanel.expanded;
                         }
@@ -295,6 +296,7 @@ ApplicationWindow {
                             onPreviewClicked: path => {
                                 mediaViewerModal.openFile(path, splitContainer.activeModel);
                             }
+                            onActionRequested: (action, item) => contextMenu.actionTriggered(action, item)
                         }
                     }
 

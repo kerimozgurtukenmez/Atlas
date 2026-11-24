@@ -59,14 +59,14 @@ Item {
             Rectangle {
                 id: box
                 anchors.centerIn: parent
-                width: 20
-                height: 20
-                radius: 4
-                color: "transparent"
-                border.color: root.checked
+                width: Colours.mochi ? Tokens.mochi.checkSize : 20
+                height: width
+                radius: Colours.mochi ? Tokens.mochi.shortcutRadius : 4
+                color: Colours.mochi ? Colours.palette.m3surface : "transparent"
+                border.color: Colours.mochi ? Colours.palette.m3outline : (root.checked
                     ? Colours.palette.m3primary
-                    : (checkArea.containsMouse ? Colours.palette.m3onSurface : Colours.palette.m3outline)
-                border.width: 2
+                    : (checkArea.containsMouse ? Colours.palette.m3onSurface : Colours.palette.m3outline))
+                border.width: Colours.mochi ? Tokens.mochi.thin : 2
 
                 Behavior on border.color {
                     CAnim {}
@@ -75,7 +75,8 @@ Item {
                 // Checked fill background
                 Rectangle {
                     anchors.fill: parent
-                    radius: 3
+                    anchors.margins: Colours.mochi ? box.border.width : 0
+                    radius: Colours.mochi ? box.radius - box.border.width : 3
                     color: Colours.palette.m3primary
                     opacity: root.checked ? 1.0 : 0.0
                     Behavior on opacity {

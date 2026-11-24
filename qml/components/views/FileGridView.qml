@@ -19,7 +19,7 @@ Item {
 
     FontMetrics {
         id: labelMetrics
-        font: Tokens.font.body.small
+        font: root.labelFont
     }
 
     // Lays out candidate labels so long names can be shortened while keeping
@@ -27,7 +27,7 @@ Item {
     StyledText {
         id: labelMeasure
         visible: false
-        font: Tokens.font.body.small
+        font: root.labelFont
         wrapMode: Text.Wrap
         elide: Text.ElideRight
     }
@@ -139,6 +139,9 @@ Item {
             }
         }
     }
+
+    // MochiFile: mochi'de dosya adlari kalin
+    readonly property font labelFont: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.small
 
     function isSelected(path) {
         return selectedPaths.indexOf(path) !== -1;
@@ -424,6 +427,18 @@ Item {
                 }
             }
 
+            // MochiFile: secili ogenin duz golgesi (kart clip'li, golge disarida)
+            Rectangle {
+                visible: Colours.mochi && delegateContainer.isSelected
+                x: itemCard.x
+                y: itemCard.y + Tokens.mochi.smallShadow
+                width: itemCard.width
+                height: itemCard.height
+                radius: itemCard.radius
+                color: Colours.palette.m3shadow
+                opacity: itemCard.opacity
+            }
+
             // Uniform Card Highlight Size
             StyledRect {
                 id: itemCard
@@ -431,8 +446,13 @@ Item {
                 width: parent.width - 8
                 height: parent.height - 8
 
-                radius: Tokens.rounding.large
-                color: folderDropArea.containsDrag
+                radius: Colours.mochi ? Tokens.mochi.itemRadius : Tokens.rounding.large
+                // mochi: secili = acik pembe + pembe cizgi, uzerinde = acik zemin + ince cizgi
+                border.width: Colours.mochi && (delegateContainer.isSelected || itemHover.containsMouse || folderDropArea.containsDrag) ? Tokens.mochi.line : 0
+                border.color: delegateContainer.isSelected || folderDropArea.containsDrag ? Colours.palette.m3primary : Colours.palette.m3outlineVariant
+                color: Colours.mochi
+                    ? (folderDropArea.containsDrag || delegateContainer.isSelected ? Colours.palette.m3primaryContainer : (itemHover.containsMouse ? Colours.palette.m3surfaceContainerLow : Qt.alpha(Colours.palette.m3surfaceContainerLow, 0)))
+                    : folderDropArea.containsDrag
                     ? Colours.palette.m3primaryContainer
                     : (delegateContainer.isSelected ? Colours.palette.m3secondaryContainer : (itemHover.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : Qt.alpha(Colours.tPalette.m3surfaceContainerHigh, 0)))
 
@@ -700,8 +720,8 @@ Item {
                     }
 
                     text: fullName
-                    color: delegateContainer.isSelected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
-                    font: Tokens.font.body.small
+                    color: delegateContainer.isSelected && !Colours.mochi ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                    font: root.labelFont
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignTop
                     elide: Text.ElideRight

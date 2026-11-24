@@ -101,6 +101,10 @@ MouseArea {
         },
         MenuItem {
             text: qsTr("TTY")
+        },
+        // MochiFile: Cindy-Dots sticker stili (varsayilan)
+        MenuItem {
+            text: qsTr("mochi ♡")
         }
     ]
 
@@ -193,9 +197,9 @@ MouseArea {
                 implicitWidth: 760
                 implicitHeight: 660
 
-                radius: Tokens.rounding.large
+                radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
                 ttyFrame: true
-                color: Colours.palette.m3surfaceContainerHigh
+                color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerHigh
 
                 scale: root.expanded ? 1.0 : 0.94
                 Behavior on scale {
@@ -228,9 +232,9 @@ MouseArea {
                         }
 
                         StyledText {
-                            text: qsTr("Preferences")
+                            text: (Colours.mochi ? "せってい - " : "") + qsTr("Preferences")
                             color: Colours.palette.m3onSurface
-                            font: Tokens.font.body.builders.large.weight(Font.Bold).build()
+                            font: Colours.mochi ? Tokens.font.title.medium : Tokens.font.body.builders.large.weight(Font.Bold).build()
                             Layout.fillWidth: true
                         }
 
@@ -302,8 +306,8 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("Appearance")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     SplitButtonRow {
@@ -311,6 +315,8 @@ MouseArea {
                                         last: true
                                         label: qsTr("Style")
                                         subtext: {
+                                            if (Colours.mochi)
+                                                return qsTr("Sticker look, follows the Cindy-Dots colour scheme");
                                             if (Colours.style !== 0)
                                                 return qsTr("Material 3 Expressive, or drawn like a terminal");
                                             if (!Colours.kiiteAvailable)
@@ -327,8 +333,8 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("Startup Location")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     SplitButtonRow {
@@ -391,8 +397,8 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("File Display & Navigation")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     ColumnLayout {
@@ -517,8 +523,8 @@ MouseArea {
 
                                     StyledText {
                                         text: qsTr("File Transfers")
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     SplitButtonRow {
@@ -580,8 +586,8 @@ MouseArea {
 
                                     StyledText {
                                         text: qsTr("Scroll Sensitivity")
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     ConnectedRect {
@@ -664,8 +670,8 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("Thumbnail Generation")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                         opacity: AppController.thumbnailsEnabled ? 1 : 0.4
                                     }
 
@@ -686,17 +692,17 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("Theme & Icons")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     // Papirus Folders hot reload card
                                     StyledRect {
                                         Layout.fillWidth: true
                                         implicitHeight: 56
-                                        radius: Tokens.rounding.large
+                                        radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
                                         ttyFrame: true
-                                        color: Colours.tPalette.m3surfaceContainer
+                                        color: Colours.mochi ? Colours.palette.m3surface : Colours.tPalette.m3surfaceContainer
 
                                         RowLayout {
                                             anchors.fill: parent
@@ -770,8 +776,8 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("Layout & View Mode")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     SplitButtonRow {
@@ -789,8 +795,8 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("Details View Columns")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     ButtonGroup {
@@ -838,8 +844,8 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("Date & Time")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     SplitButtonRow {
@@ -865,6 +871,7 @@ MouseArea {
                                     }
 
                                     StyledRect {
+                                        mochiLine: true
                                         visible: AppController.dateFormat === 3
                                         Layout.fillWidth: true
                                         implicitHeight: 42
@@ -872,7 +879,7 @@ MouseArea {
                                         topRightRadius: Tokens.rounding.extraSmall
                                         bottomLeftRadius: Tokens.rounding.large
                                         bottomRightRadius: Tokens.rounding.large
-                                        color: Colours.tPalette.m3surfaceContainer
+                                        color: Colours.mochi ? Colours.palette.m3surface : (Colours.tPalette.m3surfaceContainer)
 
                                         TextInput {
                                             id: customDateInput
@@ -894,8 +901,8 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("Sidebar Navigation")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     ColumnLayout {
@@ -926,8 +933,8 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("Sorting & Organization")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     ColumnLayout {
@@ -996,8 +1003,8 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("Context Menu Visibility")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     StyledText {
@@ -1105,8 +1112,8 @@ MouseArea {
                                     StyledText {
                                         text: qsTr("Custom Context Actions & Scripts")
                                         Layout.topMargin: Tokens.spacing.small
-                                        color: Colours.palette.m3primary
-                                        font: Tokens.font.label.large
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
                                     StyledText {

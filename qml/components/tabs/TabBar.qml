@@ -11,10 +11,20 @@ StyledRect {
 
     readonly property bool hasSplit: TabManager.currentTab ? TabManager.currentTab.isSplit : false
     readonly property bool shouldShow: TabManager.count > 1 || hasSplit
-    implicitHeight: shouldShow ? 40 : 0
+    implicitHeight: shouldShow ? (Colours.mochi ? Tokens.mochi.tabBarHeight : 40) : 0
     visible: implicitHeight > 0
     clip: true
-    color: "transparent"
+    color: Colours.mochi ? Colours.palette.m3surfaceContainerLow : "transparent"
+
+    // MochiFile: mochi'de altta ince ayirici
+    Rectangle {
+        visible: Colours.mochi
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        height: Tokens.mochi.hair
+        color: Colours.palette.m3outlineVariant
+    }
 
     Behavior on implicitHeight {
         NumberAnimation {
@@ -26,10 +36,10 @@ StyledRect {
     Flickable {
         id: flick
         anchors.fill: parent
-        anchors.leftMargin: 8
-        anchors.rightMargin: 8
-        anchors.topMargin: 4
-        anchors.bottomMargin: 0
+        anchors.leftMargin: Colours.mochi ? Tokens.padding.medium : 8
+        anchors.rightMargin: Colours.mochi ? Tokens.padding.medium : 8
+        anchors.topMargin: Colours.mochi ? (Tokens.mochi.tabBarHeight - Tokens.mochi.tabHeight) / 2 - Tokens.mochi.smallShadow / 2 : 4
+        anchors.bottomMargin: Colours.mochi ? (Tokens.mochi.tabBarHeight - Tokens.mochi.tabHeight) / 2 + Tokens.mochi.smallShadow / 2 : 0
         contentWidth: tabsRow.implicitWidth + 40
         contentHeight: height
         flickableDirection: Flickable.HorizontalFlick
@@ -40,7 +50,7 @@ StyledRect {
             id: tabsRow
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-            spacing: -6
+            spacing: Colours.mochi ? Tokens.spacing.small : -6
 
             Repeater {
                 id: tabRepeater
@@ -63,11 +73,24 @@ StyledRect {
                     anchors.bottom: parent ? parent.bottom : undefined
                     z: tabDragArea.pressed ? 50 : (selected ? 10 : 1)
 
+                    // MochiFile: sticker sekme. Secili = beyaz + murekkep cizgi + golge,
+                    // digerleri ince cizgili bos kutu.
+                    StyledRect {
+                        anchors.fill: parent
+                        visible: Colours.mochi
+                        radius: Tokens.mochi.keyRadius
+                        mochiKey: tabItem.selected
+                        mochiLine: !tabItem.selected
+                        mochiShadow: tabItem.selected ? Tokens.mochi.smallShadow : 0
+                        mochiBorderColour: tabItem.selected ? Colours.palette.m3outline : Colours.palette.m3outlineVariant
+                        color: tabItem.selected ? Colours.palette.m3surface : (tabDropArea.containsDrag ? Colours.palette.m3primaryContainer : (tabDragArea.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent"))
+                    }
+
                     // Active Tab Google Chrome Continuous Shape with Antialiased Fillets
                     Canvas {
                         id: activeTabShape
                         anchors.fill: parent
-                        visible: tabItem.selected && !Colours.tty
+                        visible: tabItem.selected && !Colours.tty && !Colours.mochi
                         antialiasing: true
                         smooth: true
 
@@ -136,7 +159,7 @@ StyledRect {
                         anchors.leftMargin: 10
                         anchors.rightMargin: 10
                         anchors.bottomMargin: 4
-                        visible: !tabItem.selected && (tabDragArea.containsMouse || tabDropArea.containsDrag)
+                        visible: !Colours.mochi && !tabItem.selected && (tabDragArea.containsMouse || tabDropArea.containsDrag)
                         radius: Tokens.rounding.small
                         color: tabDropArea.containsDrag ? Colours.palette.m3primaryContainer : Colours.tPalette.m3surfaceContainerHigh
 
@@ -189,7 +212,7 @@ StyledRect {
                                 return;
                             }
                             if (dragging) {
-                                let totalItemW = tabItem.width - 6;
+                                let totalItemW = tabItem.width + tabsRow.spacing;
                                 let shift = tabItem.x - startX;
                                 let deltaIdx = Math.round(shift / totalItemW);
                                 let newIdx = Math.max(0, Math.min(TabManager.count - 1, tabItem.index + deltaIdx));
@@ -253,9 +276,9 @@ StyledRect {
                     RowLayout {
                         id: tabContent
                         anchors.fill: parent
-                        anchors.leftMargin: 18
-                        anchors.rightMargin: 14
-                        anchors.bottomMargin: 2
+                        anchors.leftMargin: Colours.mochi ? Tokens.padding.medium : 18
+                        anchors.rightMargin: Colours.mochi ? Tokens.padding.small : 14
+                        anchors.bottomMargin: Colours.mochi ? 0 : 2
                         spacing: 6
                         z: 10
 
@@ -279,9 +302,9 @@ StyledRect {
                                 color: tabItem.selected
                                     ? (tabItem.isSplit && tabItem.activePane === 1 ? Colours.palette.m3onSurfaceVariant : Colours.palette.m3onSurface)
                                     : Colours.palette.m3onSurfaceVariant
-                                font: tabItem.selected && (!tabItem.isSplit || tabItem.activePane === 0)
+                                font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : (tabItem.selected && (!tabItem.isSplit || tabItem.activePane === 0)
                                     ? Tokens.font.body.builders.small.weight(Font.DemiBold).build()
-                                    : Tokens.font.body.small
+                                    : Tokens.font.body.small)
                                 elide: Text.ElideRight
                             }
 
@@ -416,21 +439,24 @@ StyledRect {
                     height: 16
                     color: Colours.palette.m3outlineVariant
                     opacity: 0.6
+                    visible: !Colours.mochi
                 }
             }
 
             // New Tab Button
             Item {
-                width: 36
+                width: Colours.mochi ? Tokens.mochi.tabHeight + Tokens.spacing.small : 36
                 height: tabsRow.height
                 z: 2
 
                 StyledRect {
                     anchors.centerIn: parent
-                    implicitWidth: 28
-                    implicitHeight: 28
-                    radius: Tokens.rounding.full
-                    color: addHover.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : Qt.alpha(Colours.tPalette.m3surfaceContainerHigh, 0)
+                    implicitWidth: Colours.mochi ? Tokens.mochi.tabHeight : 28
+                    implicitHeight: Colours.mochi ? Tokens.mochi.tabHeight - Tokens.mochi.keyShadow : 28
+                    radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                    mochiKey: true
+                    mochiDown: addHover.pressed
+                    color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (addHover.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : Qt.alpha(Colours.tPalette.m3surfaceContainerHigh, 0))
 
 
                     MaterialIcon {

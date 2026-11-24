@@ -63,9 +63,9 @@ MouseArea {
         implicitWidth: 480
         implicitHeight: 540
 
-        radius: Tokens.rounding.large
+        radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
         ttyFrame: true
-        color: Colours.palette.m3surfaceContainer
+        color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainer
 
         scale: root.expanded ? 1.0 : 0.94
         Behavior on scale { Anim { type: Anim.FastEffects; easing: Tokens.anim.standard } }
@@ -95,7 +95,7 @@ MouseArea {
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: qsTr("Open With...")
+                    text: (Colours.mochi ? "ひらく - " : "") + (qsTr("Open With..."))
                     font: Tokens.font.title.medium
                     color: Colours.palette.m3onSurface
                 }

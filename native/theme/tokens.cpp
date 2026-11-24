@@ -145,7 +145,8 @@ TokensSingleton::TokensSingleton(QObject* parent)
     , m_padding(new PaddingTokens(this))
     , m_anim(new AnimCurves(this))
     , m_font(new FontTokens(this))
-    , m_sizes(new SizeTokens(this)) {
+    , m_sizes(new SizeTokens(this))
+    , m_mochi(new MochiTokens(this)) {
     reload();
 
     QString home = QDir::homePath();
@@ -255,6 +256,18 @@ void TokensSingleton::setTty(bool tty, const QString& preferredMono) {
     } else {
         m_font->setFamily(QStringLiteral("Google Sans Flex"));
         m_font->mono()->setFamily(QStringLiteral("monospace"));
+    }
+}
+
+void TokensSingleton::setMochi(bool mochi) {
+    if (m_tty)
+        return;
+    if (mochi) {
+        m_font->setFamily(QStringLiteral("Zen Maru Gothic"));
+        m_font->headline()->setFamily(QStringLiteral("Mochiy Pop One"));
+        m_font->title()->setFamily(QStringLiteral("Mochiy Pop One"));
+    } else {
+        m_font->setFamily(QStringLiteral("Google Sans Flex"));
     }
 }
 

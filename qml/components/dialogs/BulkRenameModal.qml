@@ -388,9 +388,9 @@ MouseArea {
                 anchors.centerIn: parent
                 width: Math.min(parent.width - 32, 720)
                 height: Math.min(parent.height - 32, 680)
-                radius: Tokens.rounding.large
+                radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
                 ttyFrame: true
-                color: Colours.palette.m3surfaceContainer
+                color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainer
 
                 scale: root.expanded ? 1.0 : 0.94
                 Behavior on scale {
@@ -424,9 +424,9 @@ MouseArea {
 
                         StyledText {
                             Layout.fillWidth: true
-                            text: root.fileItems.length === 1
+                            text: (Colours.mochi ? "まとめて改名 - " : "") + (root.fileItems.length === 1
                                 ? qsTr("Rename 1 item")
-                                : qsTr("Bulk Rename (%1 items)").arg(root.fileItems.length)
+                                : qsTr("Bulk Rename (%1 items)").arg(root.fileItems.length))
                             color: Colours.palette.m3onSurface
                             font: Tokens.font.title.medium
                         }
@@ -559,10 +559,11 @@ MouseArea {
                                         spacing: Tokens.spacing.small
 
                                         StyledRect {
+                                            mochiLine: true
                                             Layout.fillWidth: true
                                             implicitHeight: 38
                                             radius: Tokens.rounding.small
-                                            color: Colours.palette.m3surfaceContainerHighest
+                                            color: Colours.mochi ? Colours.palette.m3surface : (Colours.palette.m3surfaceContainerHighest)
 
                                             TextInput {
                                                 id: findIn
@@ -591,10 +592,11 @@ MouseArea {
                                         }
 
                                         StyledRect {
+                                            mochiLine: true
                                             Layout.fillWidth: true
                                             implicitHeight: 38
                                             radius: Tokens.rounding.small
-                                            color: Colours.palette.m3surfaceContainerHighest
+                                            color: Colours.mochi ? Colours.palette.m3surface : (Colours.palette.m3surfaceContainerHighest)
 
                                             TextInput {
                                                 id: repIn
@@ -731,10 +733,11 @@ MouseArea {
                                         }
 
                                         StyledRect {
+                                            mochiLine: true
                                             implicitWidth: 50
                                             implicitHeight: 32
                                             radius: Tokens.rounding.small
-                                            color: Colours.palette.m3surfaceContainerHighest
+                                            color: Colours.mochi ? Colours.palette.m3surface : (Colours.palette.m3surfaceContainerHighest)
 
                                             TextInput {
                                                 anchors.fill: parent
@@ -756,10 +759,11 @@ MouseArea {
                                         }
 
                                         StyledRect {
+                                            mochiLine: true
                                             implicitWidth: 50
                                             implicitHeight: 32
                                             radius: Tokens.rounding.small
-                                            color: Colours.palette.m3surfaceContainerHighest
+                                            color: Colours.mochi ? Colours.palette.m3surface : (Colours.palette.m3surfaceContainerHighest)
 
                                             TextInput {
                                                 anchors.fill: parent
@@ -786,10 +790,11 @@ MouseArea {
                                         }
 
                                         StyledRect {
+                                            mochiLine: true
                                             Layout.fillWidth: true
                                             implicitHeight: 34
                                             radius: Tokens.rounding.small
-                                            color: Colours.palette.m3surfaceContainerHighest
+                                            color: Colours.mochi ? Colours.palette.m3surface : (Colours.palette.m3surfaceContainerHighest)
 
                                             TextInput {
                                                 anchors.fill: parent
@@ -830,10 +835,11 @@ MouseArea {
                                         }
 
                                         StyledRect {
+                                            mochiLine: true
                                             Layout.fillWidth: true
                                             implicitHeight: 36
                                             radius: Tokens.rounding.small
-                                            color: Colours.palette.m3surfaceContainerHighest
+                                            color: Colours.mochi ? Colours.palette.m3surface : (Colours.palette.m3surfaceContainerHighest)
 
                                             TextInput {
                                                 id: insIn
@@ -867,10 +873,11 @@ MouseArea {
                                         }
 
                                         StyledRect {
+                                            mochiLine: true
                                             implicitWidth: 50
                                             implicitHeight: 32
                                             radius: Tokens.rounding.small
-                                            color: Colours.palette.m3surfaceContainerHighest
+                                            color: Colours.mochi ? Colours.palette.m3surface : (Colours.palette.m3surfaceContainerHighest)
 
                                             TextInput {
                                                 anchors.fill: parent
@@ -944,10 +951,11 @@ MouseArea {
                                         }
 
                                         StyledRect {
+                                            mochiLine: true
                                             implicitWidth: 50
                                             implicitHeight: 32
                                             radius: Tokens.rounding.small
-                                            color: Colours.palette.m3surfaceContainerHighest
+                                            color: Colours.mochi ? Colours.palette.m3surface : (Colours.palette.m3surfaceContainerHighest)
 
                                             TextInput {
                                                 anchors.fill: parent
@@ -969,10 +977,11 @@ MouseArea {
                                         }
 
                                         StyledRect {
+                                            mochiLine: true
                                             implicitWidth: 50
                                             implicitHeight: 32
                                             radius: Tokens.rounding.small
-                                            color: Colours.palette.m3surfaceContainerHighest
+                                            color: Colours.mochi ? Colours.palette.m3surface : (Colours.palette.m3surfaceContainerHighest)
 
                                             TextInput {
                                                 anchors.fill: parent
@@ -1190,10 +1199,11 @@ MouseArea {
                                         }
 
                                         StyledRect {
+                                            mochiLine: true
                                             Layout.fillWidth: true
                                             implicitHeight: 32
                                             radius: Tokens.rounding.small
-                                            color: Colours.palette.m3surfaceContainerHighest
+                                            color: Colours.mochi ? Colours.palette.m3surface : (Colours.palette.m3surfaceContainerHighest)
 
                                             TextInput {
                                                 anchors.fill: parent

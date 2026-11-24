@@ -13,9 +13,9 @@ StyledRect {
     property string iconKey: "icon"
     property int buttonHeight: 40
 
-    property color activeColor: Colours.palette.m3primaryContainer
+    property color activeColor: Colours.mochi ? Colours.palette.m3primary : Colours.palette.m3primaryContainer
     property color inactiveColor: Colours.tPalette.m3surfaceContainerHigh
-    property color activeOnColor: Colours.palette.m3onPrimaryContainer
+    property color activeOnColor: Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onPrimaryContainer
     property color inactiveOnColor: Colours.palette.m3onSurface
     property color inactiveIconColor: Colours.palette.m3onSurfaceVariant
 
@@ -37,7 +37,8 @@ StyledRect {
     StyledRect {
         id: indicator
 
-        readonly property Item target: repeater.count > root.currentIndex ? repeater.itemAt(root.currentIndex) : null
+        // itemAt bildirimsiz: oge eklenince (itemRev) yeniden hesaplansin
+        readonly property Item target: repeater.itemRev >= 0 && repeater.count > root.currentIndex ? repeater.itemAt(root.currentIndex) : null
 
         x: target ? target.x + 2 : 2
         y: 2
@@ -46,6 +47,7 @@ StyledRect {
 
         radius: Tokens.rounding.full
         color: root.activeColor
+        mochiLine: true
 
         Behavior on x {
             Anim {
@@ -67,7 +69,10 @@ StyledRect {
         Repeater {
             id: repeater
 
+            property int itemRev: 0
+
             model: root.model
+            onItemAdded: itemRev++
 
             delegate: Item {
                 id: entry

@@ -108,9 +108,9 @@ MouseArea {
         implicitWidth: 440
         implicitHeight: modalCol.implicitHeight + Tokens.padding.large * 2
 
-        radius: Tokens.rounding.large
+        radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
         ttyFrame: true
-        color: Colours.palette.m3surfaceContainerHigh
+        color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerHigh
 
         scale: root.expanded ? 1.0 : 0.94
         Behavior on scale {
@@ -148,9 +148,9 @@ MouseArea {
                     spacing: 0
 
                     StyledText {
-                        text: qsTr("Media Tools")
+                        text: (Colours.mochi ? "メディア道具 - " : "") + qsTr("Media Tools")
                         color: Colours.palette.m3onSurface
-                        font: Tokens.font.body.builders.large.weight(Font.Bold).build()
+                        font: Colours.mochi ? Tokens.font.title.medium : Tokens.font.body.builders.large.weight(Font.Bold).build()
                     }
 
                     StyledText {
@@ -284,10 +284,11 @@ MouseArea {
                                 spacing: Tokens.spacing.small
 
                                 StyledRect {
+                                    mochiLine: true
                                     Layout.fillWidth: true
                                     implicitHeight: 40
                                     radius: Tokens.rounding.small
-                                    color: Colours.tPalette.m3surfaceContainer
+                                    color: Colours.mochi ? Colours.palette.m3surface : (Colours.tPalette.m3surfaceContainer)
                                     clip: true
 
                                     TextInput {
@@ -317,10 +318,11 @@ MouseArea {
                                 }
 
                                 StyledRect {
+                                    mochiLine: true
                                     Layout.fillWidth: true
                                     implicitHeight: 40
                                     radius: Tokens.rounding.small
-                                    color: Colours.tPalette.m3surfaceContainer
+                                    color: Colours.mochi ? Colours.palette.m3surface : (Colours.tPalette.m3surfaceContainer)
                                     clip: true
 
                                     TextInput {

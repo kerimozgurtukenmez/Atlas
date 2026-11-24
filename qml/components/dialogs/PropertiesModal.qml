@@ -71,9 +71,9 @@ MouseArea {
                 implicitWidth: 620
                 implicitHeight: 600
 
-                radius: Tokens.rounding.large
+                radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
                 ttyFrame: true
-                color: Colours.palette.m3surfaceContainer
+                color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainer
 
                 scale: root.expanded ? 1.0 : 0.94
                 Behavior on scale { Anim { type: Anim.FastEffects; easing: Tokens.anim.standard } }
@@ -599,10 +599,11 @@ MouseArea {
                                             spacing: 6
 
                                             StyledRect {
+                                                mochiLine: true
                                                 Layout.fillWidth: true
                                                 implicitHeight: 28
                                                 radius: Tokens.rounding.extraSmall
-                                                color: Colours.palette.m3surfaceContainerHighest
+                                                color: Colours.mochi ? Colours.palette.m3surface : (Colours.palette.m3surfaceContainerHighest)
                                                 border.color: commentInput.activeFocus ? Colours.palette.m3primary : Qt.alpha(Colours.palette.m3outlineVariant, 0.5)
                                                 border.width: commentInput.activeFocus ? 2 : 1
                                                 clip: true

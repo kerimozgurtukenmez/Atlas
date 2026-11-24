@@ -41,9 +41,9 @@ Item {
                 implicitWidth: 440
                 implicitHeight: 400
 
-                radius: Tokens.rounding.large
+                radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
                 ttyFrame: true
-                color: Colours.palette.m3surfaceContainerHigh
+                color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerHigh
 
                 visible: opacity > 0.001
                 enabled: root.expanded
@@ -83,9 +83,9 @@ Item {
                         }
 
                         StyledText {
-                            text: qsTr("Operations & Background Tasks")
+                            text: (Colours.mochi ? "しごと中 - " : "") + qsTr("Operations & Background Tasks")
                             color: Colours.palette.m3onSurface
-                            font: Tokens.font.body.builders.large.weight(Font.Bold).build()
+                            font: Colours.mochi ? Tokens.font.title.medium : Tokens.font.body.builders.large.weight(Font.Bold).build()
                             Layout.fillWidth: true
                         }
                     }

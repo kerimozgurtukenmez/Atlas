@@ -41,9 +41,9 @@ MouseArea {
                 implicitWidth: 580
                 implicitHeight: 600
 
-                radius: Tokens.rounding.large
+                radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
                 ttyFrame: true
-                color: Colours.palette.m3surfaceContainer
+                color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainer
 
                 scale: root.expanded ? 1.0 : 0.94
                 Behavior on scale { Anim { type: Anim.FastEffects; easing: Tokens.anim.standard } }
@@ -78,7 +78,7 @@ MouseArea {
 
                             StyledText {
                                 Layout.fillWidth: true
-                                text: qsTr("Git Repository")
+                                text: (Colours.mochi ? "ギット - " : "") + (qsTr("Git Repository"))
                                 font: Tokens.font.title.medium
                                 color: Colours.palette.m3onSurface
                                 elide: Text.ElideRight

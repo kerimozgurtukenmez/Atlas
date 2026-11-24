@@ -310,6 +310,79 @@ private:
     SidebarSizeTokens* m_sidebar = nullptr;
 };
 
+// MochiFile: Cindy-Dots "mochi" stilinin cizgi, golge ve kose olculeri.
+// Sadece Colours.mochi acikken kullanilir.
+class MochiTokens : public QObject {
+    Q_OBJECT
+    QML_ANONYMOUS
+
+    Q_PROPERTY(qreal line MEMBER m_line CONSTANT)          // tus/kart cizgisi
+    Q_PROPERTY(qreal thin MEMBER m_thin CONSTANT)          // cip, secili satir
+    Q_PROPERTY(qreal hair MEMBER m_hair CONSTANT)          // bolum ayiraci
+    Q_PROPERTY(qreal keyShadow MEMBER m_keyShadow CONSTANT)
+    Q_PROPERTY(qreal smallShadow MEMBER m_smallShadow CONSTANT)
+    Q_PROPERTY(qreal shadow MEMBER m_shadow CONSTANT)      // kart, menu, diyalog
+    Q_PROPERTY(qreal keyRadius MEMBER m_keyRadius CONSTANT)
+    Q_PROPERTY(qreal rowRadius MEMBER m_rowRadius CONSTANT)
+    Q_PROPERTY(qreal itemRadius MEMBER m_itemRadius CONSTANT)
+    Q_PROPERTY(qreal cardRadius MEMBER m_cardRadius CONSTANT)
+    Q_PROPERTY(qreal sectionSpacing MEMBER m_sectionSpacing CONSTANT) // basliktaki harf araligi
+    Q_PROPERTY(int navKeyWidth MEMBER m_navKeyWidth CONSTANT)
+    Q_PROPERTY(int navKeyHeight MEMBER m_navKeyHeight CONSTANT)
+    Q_PROPERTY(int navBarHeight MEMBER m_navBarHeight CONSTANT)
+    Q_PROPERTY(int tabBarHeight MEMBER m_tabBarHeight CONSTANT)
+    Q_PROPERTY(int tabHeight MEMBER m_tabHeight CONSTANT)
+    Q_PROPERTY(int crumbHeight MEMBER m_crumbHeight CONSTANT)
+    Q_PROPERTY(int pathHeight MEMBER m_pathHeight CONSTANT)
+    Q_PROPERTY(int rowHeight MEMBER m_rowHeight CONSTANT)
+    Q_PROPERTY(int barHeight MEMBER m_barHeight CONSTANT)
+    Q_PROPERTY(int paneHeaderHeight MEMBER m_paneHeaderHeight CONSTANT)
+    Q_PROPERTY(int statusHeight MEMBER m_statusHeight CONSTANT)
+    Q_PROPERTY(int actionKeyHeight MEMBER m_actionKeyHeight CONSTANT)
+    Q_PROPERTY(int previewWidth MEMBER m_previewWidth CONSTANT)
+    Q_PROPERTY(int previewHeight MEMBER m_previewHeight CONSTANT)
+    Q_PROPERTY(int chipHeight MEMBER m_chipHeight CONSTANT)
+    Q_PROPERTY(int shortcutHeight MEMBER m_shortcutHeight CONSTANT)
+    Q_PROPERTY(qreal shortcutRadius MEMBER m_shortcutRadius CONSTANT)
+    Q_PROPERTY(qreal shortcutLine MEMBER m_shortcutLine CONSTANT)
+    Q_PROPERTY(int checkSize MEMBER m_checkSize CONSTANT)
+
+public:
+    explicit MochiTokens(QObject* parent = nullptr) : QObject(parent) {}
+
+private:
+    qreal m_line = 3;
+    qreal m_thin = 2.5;
+    qreal m_hair = 2.5;
+    qreal m_keyShadow = 4;
+    qreal m_smallShadow = 3;
+    qreal m_shadow = 6;
+    qreal m_keyRadius = 14;
+    qreal m_rowRadius = 12;
+    qreal m_itemRadius = 18;
+    qreal m_cardRadius = 26;
+    qreal m_sectionSpacing = 0.9;
+    int m_navKeyWidth = 44;
+    int m_navKeyHeight = 40;
+    int m_navBarHeight = 64;
+    int m_tabBarHeight = 60;
+    int m_tabHeight = 40;
+    int m_crumbHeight = 30;
+    int m_pathHeight = 44;
+    int m_rowHeight = 36;
+    int m_barHeight = 10;
+    int m_paneHeaderHeight = 44;
+    int m_statusHeight = 42;
+    int m_actionKeyHeight = 54;
+    int m_previewWidth = 340;
+    int m_previewHeight = 200;
+    int m_chipHeight = 26;
+    int m_shortcutHeight = 22;
+    qreal m_shortcutRadius = 7;
+    qreal m_shortcutLine = 2;
+    int m_checkSize = 24;
+};
+
 class TokensSingleton : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -321,8 +394,10 @@ class TokensSingleton : public QObject {
     Q_PROPERTY(atlas::config::AnimCurves* anim READ anim CONSTANT)
     Q_PROPERTY(atlas::config::FontTokens* font READ font CONSTANT)
     Q_PROPERTY(atlas::config::SizeTokens* sizes READ sizes CONSTANT)
+    Q_PROPERTY(atlas::config::MochiTokens* mochi READ mochi CONSTANT)
 
 public:
+    MochiTokens* mochi() const { return m_mochi; }
 
     RoundingTokens* rounding() const { return m_rounding; }
     SpacingTokens* spacing() const { return m_spacing; }
@@ -339,6 +414,10 @@ public:
     // (preferredMono when installed) and motion in a few hard frames.
     void setTty(bool tty, const QString& preferredMono);
 
+    // MochiFile: Cindy-Dots "mochi" yazilari (govde Zen Maru Gothic, buyuk basliklar
+    // Mochiy Pop One). TTY aciksa TTY kazanir.
+    void setMochi(bool mochi);
+
     static TokensSingleton* instance();
     static TokensSingleton* create(QQmlEngine* = nullptr, QJSEngine* = nullptr) {
         return instance();
@@ -352,6 +431,7 @@ private:
     AnimCurves* m_anim = nullptr;
     FontTokens* m_font = nullptr;
     SizeTokens* m_sizes = nullptr;
+    MochiTokens* m_mochi = nullptr;
     QFileSystemWatcher m_watcher;
     bool m_tty = false;
 };

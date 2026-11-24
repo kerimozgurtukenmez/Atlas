@@ -710,6 +710,8 @@ impl Colours {
                 STYLE_FOLLOW_KIITE => kiite.as_ref().is_some_and(|k| k.tty),
                 s => s == STYLE_TTY,
             };
+        // MochiFile: mochi yazilari (TTY degilse)
+        native::ffi::set_mochi_tokens(self.style == STYLE_MOCHI && !tty);
         if self.tty == tty {
             return;
         }

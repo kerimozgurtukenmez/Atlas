@@ -18,7 +18,11 @@ T.Switch {
     // TTY: a checkbox in text, `[x]` or `[ ]`, as KiiteShell draws its switches
     indicator: StyledRect {
         radius: Tokens.rounding.full
+        // MochiFile: murekkep cizgili ray, beyaz topuz
+        mochiLine: true
         color: {
+            if (Colours.mochi && !root.disabled)
+                return root.checked ? Colours.palette.m3primary : Colours.palette.m3surfaceContainerHigh;
             if (Colours.tty)
                 return "transparent";
             if (root.disabled)
@@ -48,7 +52,10 @@ T.Switch {
             readonly property real nonAnimWidth: root.pressed ? implicitHeight * 1.15 : implicitHeight
 
             radius: Tokens.rounding.full
+            mochiLine: true
             color: {
+                if (Colours.mochi)
+                    return Colours.palette.m3surface;
                 if (root.disabled)
                     return root.checked ? Colours.palette.m3surface : Qt.alpha(Colours.palette.m3onSurface, 0.12);
                 return root.checked ? Colours.palette.m3onPrimary : Colours.palette.m3outline;

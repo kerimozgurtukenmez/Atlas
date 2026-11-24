@@ -60,9 +60,9 @@ MouseArea {
         implicitWidth: 480
         implicitHeight: 560
 
-        radius: Tokens.rounding.large
+        radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
         ttyFrame: true
-        color: Colours.palette.m3surfaceContainerHigh
+        color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerHigh
 
         scale: root.expanded ? 1.0 : 0.94
         Behavior on scale { Anim { type: Anim.FastEffects; easing: Tokens.anim.standard } }
@@ -102,7 +102,7 @@ MouseArea {
                     spacing: 2
 
                     StyledText {
-                        text: qsTr("Edit Place")
+                        text: (Colours.mochi ? "ばしょ - " : "") + (qsTr("Edit Place"))
                         color: Colours.palette.m3onSurface
                         font: Tokens.font.title.medium
                     }

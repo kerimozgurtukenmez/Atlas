@@ -62,9 +62,9 @@ MouseArea {
         implicitWidth: 560
         implicitHeight: 600
 
-        radius: Tokens.rounding.large
+        radius: Colours.mochi ? Tokens.mochi.cardRadius : Tokens.rounding.large
         ttyFrame: true
-        color: Colours.palette.m3surfaceContainerHigh
+        color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerHigh
 
         scale: root.expanded ? 1.0 : 0.94
         Behavior on scale {

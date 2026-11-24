@@ -80,11 +80,12 @@ MouseArea {
         x: Math.min(Math.max(8, root.menuX), root.width - width - 8)
         y: Math.min(Math.max(8, root.menuY), root.height - height - 8)
 
-        implicitWidth: menuCol.implicitWidth + (Colours.tty ? 0 : Tokens.padding.extraSmall * 2)
-        implicitHeight: menuCol.implicitHeight + (Colours.tty ? 26 : Tokens.padding.extraSmall * 2)
+        implicitWidth: menuCol.implicitWidth + (Colours.tty ? 0 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall) * 2)
+        implicitHeight: menuCol.implicitHeight + (Colours.tty ? 26 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall) * 2)
 
-        radius: Tokens.rounding.large
-        color: Colours.palette.m3surfaceContainerLow
+        radius: Colours.mochi ? Tokens.mochi.cardRadius - Tokens.padding.extraSmall : Tokens.rounding.large
+        color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerLow
+        mochiFrame: true
 
         scale: root.expanded ? 1.0 : 0.94
         Behavior on scale {
@@ -110,10 +111,48 @@ MouseArea {
             id: menuCol
 
             anchors.fill: parent
-            anchors.margins: Colours.tty ? 0 : Tokens.padding.extraSmall
-            anchors.topMargin: Colours.tty ? 18 : Tokens.padding.extraSmall
-            anchors.bottomMargin: Colours.tty ? 8 : Tokens.padding.extraSmall
+            anchors.margins: Colours.tty ? 0 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall)
+            anchors.topMargin: Colours.tty ? 18 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall)
+            anchors.bottomMargin: Colours.tty ? 8 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall)
             spacing: 0
+
+            // MochiFile: ustte hizli tus sirasi (kes, kopyala, yapistir, yeniden adlandir, cop)
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.bottomMargin: Tokens.spacing.small
+                visible: Colours.mochi && root.targetItem !== null && !root.isTrash
+                spacing: Tokens.spacing.small
+
+                Repeater {
+                    model: [
+                        { action: "cut", icon: "content_cut", tip: qsTr("Cut") },
+                        { action: "copy", icon: "content_copy", tip: qsTr("Copy") },
+                        { action: "paste", icon: "content_paste", tip: qsTr("Paste") },
+                        { action: "rename", icon: "edit", tip: qsTr("Rename") },
+                        { action: "trash", icon: "delete", tip: qsTr("Move to Trash") }
+                    ]
+
+                    MochiKeyButton {
+                        required property var modelData
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 1
+                        implicitWidth: Tokens.mochi.navKeyWidth + Tokens.padding.small
+                        implicitHeight: Tokens.mochi.navKeyHeight
+                        icon: modelData.icon
+                        onClicked: {
+                            root.expanded = false;
+                            root.submenuOpen = false;
+                            root.activeSubmenuItems = [];
+                            root.actionTriggered(modelData.action, root.targetItem);
+                        }
+
+                        StyledToolTip {
+                            text: parent.modelData.tip
+                            visible: parent.hovered
+                        }
+                    }
+                }
+            }
 
             Repeater {
                 model: {
@@ -393,6 +432,7 @@ MouseArea {
             implicitHeight: 7
 
             Rectangle {
+                visible: !Colours.mochi
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
@@ -401,6 +441,15 @@ MouseArea {
                 height: 1
                 color: Colours.tPalette.m3outlineVariant
                 opacity: Colours.tty ? 1 : 0.4
+            }
+
+            MochiDash {
+                visible: Colours.mochi
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.leftMargin: Tokens.padding.small
+                anchors.rightMargin: Tokens.padding.small
             }
         }
     }
@@ -415,8 +464,8 @@ MouseArea {
 
             implicitWidth: Colours.tty ? ttyRow.implicitWidth : itemRow.implicitWidth + Tokens.padding.medium * 2
             implicitHeight: Colours.tty ? ttyRow.implicitHeight : 36
-            radius: Tokens.rounding.medium
-            color: highlighted && !Colours.tty ? Colours.tPalette.m3surfaceContainerHigh : "transparent"
+            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.medium
+            color: highlighted && !Colours.tty ? (Colours.mochi ? Colours.palette.m3primaryContainer : Colours.tPalette.m3surfaceContainerHigh) : "transparent"
 
             TtyMenuRow {
                 id: ttyRow
@@ -432,7 +481,7 @@ MouseArea {
             StateLayer {
                 id: itemHover
                 hoverEnabled: true
-                showHoverBackground: !Colours.tty
+                showHoverBackground: !Colours.tty && !Colours.mochi
                 onContainsMouseChanged: {
                     if (modelData.hasSubmenu) {
                         if (containsMouse) {
@@ -472,7 +521,8 @@ MouseArea {
                 MaterialIcon {
                     visible: modelData.themeIcon !== true
                     text: modelData.icon || ""
-                    color: modelData.action === "delete" || modelData.action === "emptyTrash" ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
+                    fill: Colours.mochi ? 1 : 0
+                    color: modelData.action === "delete" || modelData.action === "emptyTrash" ? Colours.palette.m3error : (Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant)
                     fontStyle: Tokens.font.icon.small
                 }
 
@@ -485,8 +535,14 @@ MouseArea {
                 StyledText {
                     Layout.fillWidth: true
                     text: modelData.text || ""
-                    font: Tokens.font.body.medium
+                    font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.medium
                     color: modelData.action === "delete" || modelData.action === "emptyTrash" ? Colours.palette.m3error : Colours.palette.m3onSurface
+                }
+
+                // MochiFile: kisayol cipi
+                MochiShortcutChip {
+                    visible: Colours.mochi && text.length > 0 && modelData.hasSubmenu !== true
+                    text: root.actionShortcuts[modelData.action] ? ((ShortcutManager.bindings[root.actionShortcuts[modelData.action]] || [])[0] || "") : ""
                 }
 
                 MaterialIcon {
@@ -507,8 +563,8 @@ MouseArea {
             Layout.fillWidth: true
             implicitWidth: Colours.tty ? ttySubRow.implicitWidth : subItemRow.implicitWidth + Tokens.padding.medium * 2
             implicitHeight: Colours.tty ? ttySubRow.implicitHeight : 36
-            radius: Tokens.rounding.medium
-            color: subHover.containsMouse && !Colours.tty ? Colours.tPalette.m3surfaceContainerHigh : "transparent"
+            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.medium
+            color: subHover.containsMouse && !Colours.tty ? (Colours.mochi ? Colours.palette.m3primaryContainer : Colours.tPalette.m3surfaceContainerHigh) : "transparent"
 
             TtyMenuRow {
                 id: ttySubRow
@@ -521,7 +577,7 @@ MouseArea {
             StateLayer {
                 id: subHover
                 hoverEnabled: true
-                showHoverBackground: !Colours.tty
+                showHoverBackground: !Colours.tty && !Colours.mochi
                 onClicked: {
                     root.expanded = false;
                     root.submenuOpen = false;
@@ -540,14 +596,15 @@ MouseArea {
 
                 MaterialIcon {
                     text: modelData.icon || "share"
-                    color: Colours.palette.m3primary
+                    fill: Colours.mochi ? 1 : 0
+                    color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
                     fontStyle: Tokens.font.icon.small
                 }
 
                 StyledText {
                     Layout.fillWidth: true
                     text: modelData.text || ""
-                    font: Tokens.font.body.medium
+                    font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.medium
                     color: Colours.palette.m3onSurface
                 }
             }
@@ -565,12 +622,13 @@ MouseArea {
         x: openOnRight ? (menuRect.x + menuRect.width + 4) : Math.max(8, menuRect.x - width - 4)
         y: Math.min(Math.max(8, root.submenuY - 4), root.height - height - 8)
 
-        implicitWidth: submenuCol.implicitWidth + (Colours.tty ? 0 : Tokens.padding.extraSmall * 2)
-        implicitHeight: submenuCol.implicitHeight + (Colours.tty ? 12 : Tokens.padding.extraSmall * 2)
+        implicitWidth: submenuCol.implicitWidth + (Colours.tty ? 0 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall) * 2)
+        implicitHeight: submenuCol.implicitHeight + (Colours.tty ? 12 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall) * 2)
 
-        radius: Tokens.rounding.large
+        radius: Colours.mochi ? Tokens.mochi.cardRadius - Tokens.padding.extraSmall : Tokens.rounding.large
         ttyFrame: true
-        color: Colours.palette.m3surfaceContainerLow
+        mochiFrame: true
+        color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerLow
 
         transformOrigin: openOnRight ? Item.TopLeft : Item.TopRight
         scale: root.submenuOpen ? 1.0 : 0.94
@@ -624,9 +682,9 @@ MouseArea {
             id: submenuCol
 
             anchors.fill: parent
-            anchors.margins: Colours.tty ? 0 : Tokens.padding.extraSmall
-            anchors.topMargin: Colours.tty ? 6 : Tokens.padding.extraSmall
-            anchors.bottomMargin: Colours.tty ? 6 : Tokens.padding.extraSmall
+            anchors.margins: Colours.tty ? 0 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall)
+            anchors.topMargin: Colours.tty ? 6 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall)
+            anchors.bottomMargin: Colours.tty ? 6 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall)
             spacing: 0
 
             Repeater {
