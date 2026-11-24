@@ -9,8 +9,10 @@ description = "A fast, lightweight Material Design 3 file manager"
 # rather than under crates/ like Airlock's.
 build = "build.rs"
 
+# MochiFile (Atlas fork'u): kullanicinin gordugu ad mochifile. Ic adlar (crate, QML
+# modulu "atlas") bilerek ayni kaldi ki upstream Atlas guncellemeleri kolay gelsin.
 [[bin]]
-name = "atlas"
+name = "mochifile"
 path = "src/main.rs"
 
 [dependencies]

@@ -591,7 +591,7 @@ impl qobject::AppIntegration {
     }
 
     fn open_new_window(&self, path: &QString) {
-        let exe = std::env::current_exe().map(|p| p.to_string_lossy().into_owned()).unwrap_or_else(|_| "atlas".into());
+        let exe = std::env::current_exe().map(|p| p.to_string_lossy().into_owned()).unwrap_or_else(|_| "mochifile".into());
         let path = path.to_string();
         let args = if path.is_empty() { Vec::new() } else { vec![path] };
         spawn_detached(&exe, &args, None);

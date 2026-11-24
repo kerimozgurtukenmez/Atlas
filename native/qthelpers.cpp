@@ -55,8 +55,10 @@ static void adoptPreviousSettings() {
 }
 
 void setupApplication(const QString& version) {
-    QGuiApplication::setApplicationName("atlas");
-    QGuiApplication::setApplicationDisplayName("Atlas");
+    // MochiFile: gorunen ad ve Wayland app_id (desktop dosyasi adi)
+    QGuiApplication::setApplicationName("mochifile");
+    QGuiApplication::setApplicationDisplayName("MochiFile");
+    QGuiApplication::setDesktopFileName("mochifile");
     QGuiApplication::setOrganizationName("astra-atlas");
     QGuiApplication::setApplicationVersion(version);
 

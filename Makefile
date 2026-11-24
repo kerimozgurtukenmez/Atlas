@@ -9,22 +9,22 @@ CARGO ?= cargo
 
 .PHONY: all install uninstall clean
 
-all: target/release/atlas
+all: target/release/mochifile
 
-target/release/atlas:
+target/release/mochifile:
 	$(CARGO) build --release --locked
 
-install: target/release/atlas
-	install -Dm755 target/release/atlas $(BINDIR)/atlas
-	install -Dm644 assets/atlas.desktop $(DATADIR)/applications/atlas.desktop
-	install -Dm644 assets/atlas.svg $(DATADIR)/icons/hicolor/scalable/apps/atlas.svg
-	install -Dm644 assets/atlas.svg $(DATADIR)/pixmaps/atlas.svg
+install: target/release/mochifile
+	install -Dm755 target/release/mochifile $(BINDIR)/mochifile
+	install -Dm644 assets/mochifile.desktop $(DATADIR)/applications/mochifile.desktop
+	install -Dm644 assets/atlas.svg $(DATADIR)/icons/hicolor/scalable/apps/mochifile.svg
+	install -Dm644 assets/atlas.svg $(DATADIR)/pixmaps/mochifile.svg
 
 uninstall:
-	rm -fv $(BINDIR)/atlas \
-		$(DATADIR)/applications/atlas.desktop \
-		$(DATADIR)/icons/hicolor/scalable/apps/atlas.svg \
-		$(DATADIR)/pixmaps/atlas.svg
+	rm -fv $(BINDIR)/mochifile \
+		$(DATADIR)/applications/mochifile.desktop \
+		$(DATADIR)/icons/hicolor/scalable/apps/mochifile.svg \
+		$(DATADIR)/pixmaps/mochifile.svg
 
 clean:
 	$(CARGO) clean

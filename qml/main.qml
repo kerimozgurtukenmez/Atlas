@@ -16,8 +16,8 @@ ApplicationWindow {
     id: window
 
     title: TabManager.currentTab && TabManager.currentTab.title
-        ? (TabManager.currentTab.title + " — Atlas")
-        : "Atlas"
+        ? (TabManager.currentTab.title + " — MochiFile")
+        : "MochiFile"
 
     visible: true
     width: 1060

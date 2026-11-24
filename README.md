@@ -1,3 +1,7 @@
+> **MochiFile** is a fork of [Atlas](https://github.com/AstraSuite/Atlas) by AstraSuite,
+> restyled for the Cindy-Dots desktop ("mochi ♡" style). All the file-manager work is
+> Atlas's; thank you to its authors. Licensed GPL-3.0-only, like Atlas.
+
 <p align="center">
   <img src="assets/atlas.svg" width="140" alt="Atlas Logo">
 </p>
