@@ -481,6 +481,8 @@ ApplicationWindow {
                     PlacesModel.addBookmark(currentDir);
                 } else if (action === "openTerminal") {
                     AppIntegration.openInTerminal(currentDir);
+                } else if (action === "setWallpaper" && item) {
+                    Colours.mochiSetWallpaper(item.path);
                 } else if (action === "properties" && item) {
                     propertiesModal.targetPath = item.path;
                     propertiesModal.expanded = true;

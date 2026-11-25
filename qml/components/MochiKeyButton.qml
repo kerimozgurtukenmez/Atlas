@@ -18,7 +18,7 @@ StyledRect {
     implicitHeight: Tokens.mochi.actionKeyHeight
     radius: Tokens.mochi.keyRadius
     mochiKey: true
-    mochiDown: area.pressed || on
+    mochiDown: area.pressed
     color: on ? Colours.palette.m3primary : (area.containsMouse ? Colours.palette.m3surfaceContainerHighest : Colours.palette.m3surfaceContainerHigh)
 
     GridLayout {

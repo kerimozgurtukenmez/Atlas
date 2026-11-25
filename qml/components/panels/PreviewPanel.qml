@@ -318,6 +318,61 @@ StyledRect {
 
                 InfoRow {}
             }
+
+            // MochiFile: かべがみ karti, resmi Cindy-Dots duvar kagidi yapar
+            StyledRect {
+                id: wallCard
+
+                // tusa basinca "su anki" yazisi yeniden hesaplansin
+                property int rev: 0
+
+                Layout.fillWidth: true
+                Layout.topMargin: Tokens.spacing.small
+                visible: Colours.mochi && meta.isImage && meta.path.length > 0
+                implicitHeight: wallCol.implicitHeight + Tokens.padding.medium * 2
+                radius: Tokens.mochi.itemRadius
+                color: Colours.palette.m3primaryContainer
+                mochiLine: true
+                mochiBorder: Tokens.mochi.line
+                mochiBorderColour: Colours.palette.m3primary
+
+                ColumnLayout {
+                    id: wallCol
+
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: Tokens.padding.medium
+                    spacing: Tokens.spacing.small
+
+                    MochiTitle {
+                        Layout.fillWidth: true
+                        jp: "かべがみ"
+                        title: qsTr("Wallpaper")
+                    }
+
+                    StyledText {
+                        Layout.fillWidth: true
+                        text: wallCard.rev >= 0 && Colours.mochiSetting("wallpaper") === meta.path ? qsTr("Current wallpaper") : qsTr("Use this image as the Cindy-Dots wallpaper")
+                        color: Colours.palette.m3onSurfaceVariant
+                        font: Tokens.font.label.builders.small.weight(Font.Black).build()
+                        wrapMode: Text.Wrap
+                    }
+
+                    MochiKeyButton {
+                        Layout.fillWidth: true
+                        implicitHeight: Tokens.mochi.navKeyHeight
+                        horizontal: true
+                        on: true
+                        icon: "wallpaper"
+                        label: qsTr("Set as wallpaper ♡")
+                        onClicked: {
+                            Colours.mochiSetWallpaper(meta.path);
+                            wallCard.rev++;
+                        }
+                    }
+                }
+            }
         }
     }
 

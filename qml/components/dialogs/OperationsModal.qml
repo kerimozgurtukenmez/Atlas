@@ -141,7 +141,7 @@ Item {
                                         StyledText {
                                             text: CatboxUploader.isUploading
                                                 ? (qsTr("Uploading %1 to %2 (%3%)").arg(CatboxUploader.currentFileName).arg(CatboxUploader.currentService || "Cloud").arg(Math.round(CatboxUploader.uploadProgress * 100)))
-                                                : (FileOperations.progress.statusText || qsTr("In progress..."))
+                                                : (FileOperations.progress.statusText ? qsTr(FileOperations.progress.statusText) : qsTr("In progress..."))
                                             color: Colours.palette.m3onSurface
                                             font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.small
                                             Layout.fillWidth: true

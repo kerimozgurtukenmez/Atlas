@@ -186,6 +186,11 @@ pub mod qobject {
         #[qinvokable]
         #[cxx_name = "mochiSetting"]
         fn mochi_setting(self: &Colours, key: &QString) -> QString;
+        /// MochiFile: resmi Cindy-Dots duvar kagidi yapar (`qs ipc call wallpaper set`).
+        /// Shell calismiyorsa false.
+        #[qinvokable]
+        #[cxx_name = "mochiSetWallpaper"]
+        fn mochi_set_wallpaper(self: &Colours, path: &QString) -> bool;
     }
 
     impl cxx_qt::Threading for Colours {}
@@ -685,6 +690,22 @@ impl Colours {
             .and_then(|json| json.get(key.to_string()).and_then(|v| v.as_str()).map(str::to_string))
             .unwrap_or_default();
         qs(&value)
+    }
+
+    fn mochi_set_wallpaper(&self, path: &QString) -> bool {
+        let path = path.to_string();
+        if !path.starts_with('/') {
+            return false;
+        }
+        // Surec adi kuruluma gore "qs" ya da "quickshell"; arguman dizisi, kabuk yok.
+        ["qs", "quickshell"].iter().any(|bin| {
+            std::process::Command::new(bin)
+                .args(["ipc", "call", "wallpaper", "set", &path])
+                .stdout(std::process::Stdio::null())
+                .stderr(std::process::Stdio::null())
+                .status()
+                .is_ok_and(|s| s.success())
+        })
     }
 
     fn kiite_available(&self) -> bool {

@@ -191,6 +191,11 @@ MouseArea {
                             }
                             list.push({ text: qsTr("Open"), icon: "open_in_new", action: "open" });
                             list.push({ text: qsTr("Open With..."), icon: "open_with", action: "openWith" });
+                            // MochiFile: resmi Cindy-Dots duvar kagidi yap (shell IPC)
+                            if (Colours.mochi && (root.targetItem.isImage || FileUtils.isImage(root.targetItem.path))) {
+                                list.push({ isSeparator: true });
+                                list.push({ text: qsTr("Set as wallpaper ♡"), icon: "wallpaper", action: "setWallpaper" });
+                            }
                         }
 
                         // Secondary Open Actions (e.g. Open with VS Code / VSCodium)

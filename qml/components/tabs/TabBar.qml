@@ -10,7 +10,10 @@ StyledRect {
     signal filesDropped(var sourceFiles, string targetDir, real globalX, real globalY)
 
     readonly property bool hasSplit: TabManager.currentTab ? TabManager.currentTab.isSplit : false
-    readonly property bool shouldShow: TabManager.count > 1 || hasSplit
+    // MochiFile: mochi'de cubuk hep gorunur (solda uygulama basligi)
+    readonly property bool shouldShow: TabManager.count > 1 || hasSplit || Colours.mochi
+    // Baslik yer tutucusu: Cindy-Dots settings.json "mochifileTitle", yoksa uygulama adi
+    readonly property string mochiTitle: Colours.mochiSetting("mochifileTitle") || Qt.application.displayName
     implicitHeight: shouldShow ? (Colours.mochi ? Tokens.mochi.tabBarHeight : 40) : 0
     visible: implicitHeight > 0
     clip: true
@@ -33,10 +36,22 @@ StyledRect {
         }
     }
 
+    StyledText {
+        id: mochiTitleText
+
+        visible: Colours.mochi
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.leftMargin: Tokens.padding.large
+        text: root.mochiTitle
+        color: Colours.palette.m3onSurface
+        font: Tokens.font.title.medium
+    }
+
     Flickable {
         id: flick
         anchors.fill: parent
-        anchors.leftMargin: Colours.mochi ? Tokens.padding.medium : 8
+        anchors.leftMargin: Colours.mochi ? mochiTitleText.width + Tokens.padding.large * 2 : 8
         anchors.rightMargin: Colours.mochi ? Tokens.padding.medium : 8
         anchors.topMargin: Colours.mochi ? (Tokens.mochi.tabBarHeight - Tokens.mochi.tabHeight) / 2 - Tokens.mochi.smallShadow / 2 : 4
         anchors.bottomMargin: Colours.mochi ? (Tokens.mochi.tabBarHeight - Tokens.mochi.tabHeight) / 2 + Tokens.mochi.smallShadow / 2 : 0
