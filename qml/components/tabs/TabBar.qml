@@ -392,7 +392,7 @@ StyledRect {
 
                             StyledText {
                                 Layout.fillWidth: true
-                                text: tabItem.splitTitle
+                                text: tabItem.splitTitle === "Home" ? qsTr("Home") : tabItem.splitTitle
                                 color: tabItem.selected
                                     ? (tabItem.activePane === 1 ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant)
                                     : Colours.palette.m3onSurfaceVariant

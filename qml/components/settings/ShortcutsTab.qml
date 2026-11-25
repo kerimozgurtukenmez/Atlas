@@ -72,7 +72,9 @@ Item {
                 Layout.fillWidth: true
                 implicitHeight: 38
                 radius: Tokens.rounding.full
-                color: Colours.tPalette.m3surfaceContainerHighest
+                mochiLine: true
+                mochiBorder: Tokens.mochi.line
+                color: Colours.mochi ? Colours.palette.m3surfaceContainerLow : Colours.tPalette.m3surfaceContainerHighest
 
                 RowLayout {
                     anchors.fill: parent
@@ -170,8 +172,8 @@ Item {
                         StyledText {
                             Layout.topMargin: Tokens.spacing.small
                             text: qsTr(modelData.name)
-                            color: Colours.palette.m3primary
-                            font: Tokens.font.label.large
+                            color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                            font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                         }
 
                         ColumnLayout {

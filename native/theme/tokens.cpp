@@ -267,8 +267,11 @@ void TokensSingleton::setMochi(bool mochi) {
         m_font->setFamily(QStringLiteral("Zen Maru Gothic,Nunito"));
         m_font->headline()->setFamily(QStringLiteral("Mochiy Pop One,Rounded Mplus 1c"));
         m_font->title()->setFamily(QStringLiteral("Mochiy Pop One,Rounded Mplus 1c"));
+        // Tasarimdaki kod/kisayol yazisi JetBrains Mono (dots: ttf-jetbrains-mono-nerd)
+        m_font->mono()->setFamily(QStringLiteral("JetBrainsMono Nerd Font,monospace"));
     } else {
         m_font->setFamily(QStringLiteral("Google Sans Flex"));
+        m_font->mono()->setFamily(QStringLiteral("monospace"));
     }
 }
 

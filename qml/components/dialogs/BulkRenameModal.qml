@@ -1455,13 +1455,17 @@ MouseArea {
                         }
 
                         StyledRect {
-                            implicitWidth: 100
+                            // MochiFile: genislik yaziya gore (Turkce metin daha uzun), mochi'de tus
+                            implicitWidth: Math.max(100, renameLabel.implicitWidth + Tokens.padding.large * 2)
                             implicitHeight: 38
-                            radius: Tokens.rounding.full
+                            radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                            mochiKey: true
+                            mochiDown: renameState.pressed
                             opacity: (!root.hasProblem && root.changedCount > 0) ? 1.0 : 0.4
                             color: Colours.palette.m3primary
 
                             StateLayer {
+                                id: renameState
                                 color: Colours.palette.m3onPrimary
                                 onClicked: {
                                     if (root.hasProblem || root.changedCount === 0)
@@ -1472,6 +1476,7 @@ MouseArea {
                             }
 
                             StyledText {
+                                id: renameLabel
                                 anchors.centerIn: parent
                                 text: qsTr("Rename")
                                 color: Colours.palette.m3onPrimary

@@ -83,17 +83,20 @@ ConnectedRect {
                 StyledRect {
                     required property string modelData
 
-                    implicitHeight: 22
+                    implicitHeight: Colours.mochi ? Tokens.mochi.shortcutHeight : 22
                     implicitWidth: chipLabel.implicitWidth + Tokens.padding.small * 2
-                    radius: Tokens.rounding.full
-                    color: Colours.tPalette.m3surfaceContainerHighest
+                    radius: Colours.mochi ? Tokens.mochi.shortcutRadius : Tokens.rounding.full
+                    // MochiFile: menulerdeki gibi murekkep cizgili tus cipi
+                    mochiLine: true
+                    mochiBorder: Tokens.mochi.shortcutLine
+                    color: Colours.mochi ? Colours.palette.m3surface : Colours.tPalette.m3surfaceContainerHighest
 
                     StyledText {
                         id: chipLabel
                         anchors.centerIn: parent
                         text: modelData
-                        color: Colours.palette.m3onSurfaceVariant
-                        font: Tokens.font.label.small
+                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
+                        font: Colours.mochi ? Tokens.font.mono.builders.small.weight(Font.Bold).build() : Tokens.font.label.small
                     }
 
                     MouseArea {

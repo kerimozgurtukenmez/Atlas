@@ -243,8 +243,8 @@ MouseArea {
                                         id: changeText
                                         anchors.centerIn: parent
                                         text: qsTr("Change...")
-                                        font: Tokens.font.label.small
-                                        color: Colours.palette.m3primary
+                                        font: Colours.mochi ? Tokens.font.label.builders.small.weight(Font.Black).build() : Tokens.font.label.small
+                                        color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
                                     }
 
                                     MouseArea {
@@ -453,10 +453,11 @@ MouseArea {
                         // Hash Comparator / Validator
                         StyledText { text: qsTr("Verify Hash Match:"); font: Tokens.font.label.medium; color: Colours.palette.m3onSurface }
                         StyledRect {
+                            mochiLine: true
                             Layout.fillWidth: true
                             implicitHeight: 36
                             radius: Tokens.rounding.small
-                            color: Colours.tPalette.m3surfaceContainerHigh
+                            color: Colours.mochi ? Colours.palette.m3surface : (Colours.tPalette.m3surfaceContainerHigh)
 
                             RowLayout {
                                 anchors.fill: parent

@@ -39,7 +39,7 @@ StyledRect {
     property color disabledOnColour: Qt.alpha(Colours.palette.m3onSurface, 0.38)
 
     property bool internalChecked: false
-    readonly property color onColour: disabled ? disabledOnColour : (mochiKeycap && !mochiPrimary ? Colours.palette.m3onSurface : (internalChecked ? activeOnColour : inactiveOnColour))
+    readonly property color onColour: disabled && !mochiKeycap ? disabledOnColour : (mochiKeycap && disabled ? Colours.palette.m3onSurface : mochiKeycap && !mochiPrimary ? Colours.palette.m3onSurface : (internalChecked ? activeOnColour : inactiveOnColour))
 
     property real pressedRadius: Tokens.rounding.small
     property real checkedRadius: Tokens.rounding.medium
@@ -69,8 +69,9 @@ StyledRect {
             return (implicitHeight || height) / 2 * Math.min(1, Tokens.rounding.scale);
         return defaultRadius;
     }
+    opacity: mochiKeycap && disabled ? 0.45 : 1
     color: mochiKeycap
-        ? (disabled ? disabledColour : (mochiPrimary ? (internalChecked ? activeColour : inactiveColour) : Colours.palette.m3surfaceContainerHigh))
+        ? (disabled ? Colours.palette.m3surfaceContainerHigh : (mochiPrimary ? (internalChecked ? activeColour : inactiveColour) : Colours.palette.m3surfaceContainerHigh))
         : (type === ButtonBase.Text ? "transparent" : (disabled ? disabledColour : (internalChecked ? activeColour : inactiveColour)))
     border.width: mochiActive ? mochiBorder : (type === ButtonBase.Outlined ? 1 : 0)
     border.color: mochiActive ? mochiBorderColour : (type === ButtonBase.Outlined ? (disabled ? disabledColour : Colours.palette.m3outline) : "transparent")

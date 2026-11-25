@@ -42,6 +42,11 @@ Item {
     // MochiFile: sutun basliklari kucuk, kalin, harf aralikli
     readonly property font headerFont: Colours.mochi ? Tokens.font.label.builders.small.weight(Font.Black).letterSpacing(Tokens.mochi.sectionSpacing).build() : Tokens.font.label.medium
 
+    // MochiFile: mochi'de sutun basliklari buyuk harf (Turkce i/I icin dile gore)
+    function headerText(label) {
+        return Colours.mochi ? label.toLocaleUpperCase(Qt.locale().name) : label;
+    }
+
     function forceActiveFocus() {
         listView.forceActiveFocus();
     }
@@ -376,9 +381,9 @@ Item {
 
                         StyledText {
                             Layout.fillWidth: true
-                            text: qsTr("Name")
+                            text: root.headerText(qsTr("Name"))
                             font: root.headerFont
-                            color: Colours.palette.m3onSurface
+                            color: Colours.mochi ? Colours.palette.m3onSurfaceVariant : Colours.palette.m3onSurface
                             elide: Text.ElideRight
                         }
 
@@ -425,9 +430,9 @@ Item {
 
                             StyledText {
                                 Layout.fillWidth: true
-                                text: headerCell.spec.label
+                                text: root.headerText(headerCell.spec.label)
                                 font: root.headerFont
-                                color: headerCell.spec.muted ? Colours.palette.m3onSurfaceVariant : Colours.palette.m3onSurface
+                                color: headerCell.spec.muted || Colours.mochi ? Colours.palette.m3onSurfaceVariant : Colours.palette.m3onSurface
                                 elide: Text.ElideRight
                             }
 
