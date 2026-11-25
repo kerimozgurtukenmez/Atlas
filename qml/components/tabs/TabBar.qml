@@ -298,7 +298,7 @@ StyledRect {
 
                             StyledText {
                                 Layout.fillWidth: true
-                                text: tabItem.title
+                                text: tabItem.title === "Home" ? qsTr("Home") : tabItem.title
                                 color: tabItem.selected
                                     ? (tabItem.isSplit && tabItem.activePane === 1 ? Colours.palette.m3onSurfaceVariant : Colours.palette.m3onSurface)
                                     : Colours.palette.m3onSurfaceVariant

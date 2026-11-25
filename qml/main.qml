@@ -27,6 +27,9 @@ ApplicationWindow {
     color: Colours.tPalette.m3surfaceContainerLowest
 
     property real zoomLevel: 80
+    // MochiFile: ikon izleyicisi (Papirus + CindySticker) acilista baslasin;
+    // singleton ilk kullanildiginda olusur, yoksa sadece ayarlar acilinca calisirdi
+    readonly property string iconWatcherColour: PapirusWatcher.currentColor
 
     Component.onCompleted: zoomLevel = AppController.iconZoomLevel
     onZoomLevelChanged: AppController.iconZoomLevel = Math.round(zoomLevel)
@@ -234,6 +237,7 @@ ApplicationWindow {
                         // View Container
                         SplitViewContainer {
                             id: splitContainer
+                            onClearSearchRequested: navBar.clearSearch()
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             activeTab: TabManager.currentTab

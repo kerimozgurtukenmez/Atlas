@@ -64,7 +64,11 @@ void FontStyleBase::setSizes(int smallSize, int mediumSize, int largeSize, int e
 QFont FontStyleBase::makeFont(int baseSize, QFont::Weight weight) {
     QFont f;
     if (!m_family.isEmpty()) {
-        f.setFamily(m_family);
+        // MochiFile: "Aile,Yedek" bicimi; eksik harfler (or. Turkce s g i) yedekten gelir
+        if (m_family.contains(','))
+            f.setFamilies(m_family.split(',', Qt::SkipEmptyParts));
+        else
+            f.setFamily(m_family);
     }
     const int scaledSize = static_cast<int>(baseSize * m_scale);
     const int cappedSize = scaledSize > 0 ? scaledSize : 1;

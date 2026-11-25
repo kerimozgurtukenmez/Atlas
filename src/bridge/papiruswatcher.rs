@@ -114,6 +114,21 @@ pub fn current_color() -> String {
     if color.is_empty() { "default".to_string() } else { color }
 }
 
+/// MochiFile: Cindy-Dots ikon temasi (cindy-icons uretir). Sema degisince klasor
+/// yeniden yazilir (gecici klasor + rename); index.theme'in zamani her seferinde degisir.
+const CINDY_THEME: &str = "CindySticker";
+
+fn cindy_theme_dir() -> String {
+    format!("{}/.local/share/icons/{CINDY_THEME}", paths::home())
+}
+
+fn cindy_stamp() -> String {
+    std::fs::metadata(format!("{}/index.theme", cindy_theme_dir()))
+        .and_then(|m| m.modified())
+        .map(|t| format!("{t:?}"))
+        .unwrap_or_default()
+}
+
 pub fn is_available() -> bool {
     paths::find_executable("papirus-folders").is_some() || !detect_color_from_symlink().is_empty()
 }
@@ -123,6 +138,7 @@ pub struct PapirusWatcherRust {
     watcher: Option<Watcher>,
     last_color: String,
     last_symlink_target: String,
+    last_cindy_stamp: String,
     debounce: Arc<AtomicU64>,
 }
 
@@ -148,6 +164,7 @@ impl cxx_qt::Initialize for PapirusWatcher {
         let mut rust = self.as_mut().rust_mut();
         rust.last_color = current_color();
         rust.last_symlink_target = detect_color_from_symlink();
+        rust.last_cindy_stamp = cindy_stamp();
     }
 }
 
@@ -166,6 +183,12 @@ impl PapirusWatcher {
             self.add_path(dir, true);
             self.add_path(&format!("{dir}/keep"), false);
         }
+
+        // CindySticker: klasorun kendisi degisir, ust klasoru (icons) de izle
+        let cindy = cindy_theme_dir();
+        self.add_path(&paths::parent(&cindy), true);
+        self.add_path(&cindy, true);
+        self.add_path(&format!("{cindy}/index.theme"), false);
 
         let mut bases = icon_base_dirs();
         if let Ok(xdg) = std::env::var("XDG_DATA_DIRS") {
@@ -200,13 +223,15 @@ impl PapirusWatcher {
         self.as_mut().scan_and_watch();
         let color = current_color();
         let symlink = detect_color_from_symlink();
-        if color == self.last_color && symlink == self.last_symlink_target && !self.last_color.is_empty() {
+        let stamp = cindy_stamp();
+        if color == self.last_color && symlink == self.last_symlink_target && stamp == self.last_cindy_stamp && !self.last_color.is_empty() {
             return;
         }
         {
             let mut rust = self.as_mut().rust_mut();
             rust.last_color = color.clone();
             rust.last_symlink_target = symlink;
+            rust.last_cindy_stamp = stamp;
         }
         self.notify(&color);
     }

@@ -121,6 +121,8 @@ StyledRect {
     }
 
     signal itemContextMenu(var item, real mouseX, real mouseY)
+    // MochiFile: bos arama ekranindaki "aramayi temizle" tusu
+    signal clearSearchRequested()
     signal blankContextMenu(real mouseX, real mouseY)
     signal filesDropped(var sources, string destDir, real mouseX, real mouseY)
     signal createNewFolder()
@@ -213,6 +215,7 @@ StyledRect {
             }
 
             EmptyStateView {
+                onClearSearch: root.clearSearchRequested()
                 visible: mainModel.count === 0 && !mainModel.isLoading
                 path: root.activeTab ? root.activeTab.currentPath : ""
                 isSearching: mainModel.isSearching
@@ -354,6 +357,7 @@ StyledRect {
             }
 
             EmptyStateView {
+                onClearSearch: root.clearSearchRequested()
                 visible: splitModel.count === 0 && !splitModel.isLoading
                 path: (root.activeTab && root.activeTab.splitPath) ? root.activeTab.splitPath : ""
                 isSearching: splitModel.isSearching

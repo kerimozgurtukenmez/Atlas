@@ -48,6 +48,8 @@ const RESOURCES: &[&str] = &[
     "assets/runner/sounds/press.wav",
     "assets/runner/sounds/hit.wav",
     "assets/runner/sounds/reached.wav",
+    // MochiFile: arayuz cevirileri (qthelpers.cpp JsonTranslator)
+    "i18n/tr.json",
 ];
 
 fn collect_qml(dir: &Path, out: &mut Vec<String>) {
@@ -106,7 +108,7 @@ fn main() {
     println!("cargo:rustc-env=ATLAS_VERSION={}", atlas_version());
     println!("cargo:rerun-if-env-changed=ATLAS_VERSION");
     println!("cargo:rerun-if-changed=.git/HEAD");
-    for dir in ["qml", "assets", "native", "src/bridge"] {
+    for dir in ["qml", "assets", "native", "src/bridge", "i18n"] {
         println!("cargo:rerun-if-changed={}", repo_root.join(dir).display());
     }
 

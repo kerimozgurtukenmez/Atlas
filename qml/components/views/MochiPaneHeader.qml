@@ -29,6 +29,6 @@ Rectangle {
         elide: Text.ElideMiddle
         text: root.path.startsWith(FileUtils.home) ? "~" + root.path.substring(FileUtils.home.length) : root.path
         color: Colours.palette.m3onSurface
-        font: Tokens.font.title.builders.medium.family(Tokens.font.headline.small.family).build()
+        font: Tokens.font.title.medium
     }
 }

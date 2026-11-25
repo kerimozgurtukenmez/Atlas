@@ -181,6 +181,11 @@ pub mod qobject {
         #[qinvokable]
         #[cxx_name = "nerdGlyph"]
         fn nerd_glyph(self: &Colours, name: &QString) -> QString;
+        /// MochiFile: Cindy-Dots ayar dosyasindan (~/.config/cindy-dots/settings.json)
+        /// metin bir ayar; yoksa bos. Or. bos klasor resmi yolu.
+        #[qinvokable]
+        #[cxx_name = "mochiSetting"]
+        fn mochi_setting(self: &Colours, key: &QString) -> QString;
     }
 
     impl cxx_qt::Threading for Colours {}
@@ -670,6 +675,16 @@ impl Colours {
             return QString::default();
         }
         nerd::glyph(&name.to_string()).map(|c| qs(&c.to_string())).unwrap_or_default()
+    }
+
+    fn mochi_setting(&self, key: &QString) -> QString {
+        let file = format!("{}/cindy-dots/settings.json", paths::config_home());
+        let value = std::fs::read_to_string(file)
+            .ok()
+            .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
+            .and_then(|json| json.get(key.to_string()).and_then(|v| v.as_str()).map(str::to_string))
+            .unwrap_or_default();
+        qs(&value)
     }
 
     fn kiite_available(&self) -> bool {

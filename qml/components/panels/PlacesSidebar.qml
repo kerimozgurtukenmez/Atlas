@@ -248,7 +248,8 @@ StyledRect {
 
                             StyledText {
                                 Layout.fillWidth: true
-                                text: placeItem.name
+                                // standart yerlerin adi Rust'tan Ingilizce gelir, ceviriden gecir
+                                text: placeItem.isCustom ? placeItem.name : qsTr(placeItem.name)
                                 color: placeItem.selected ? (Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondaryContainer) : Colours.palette.m3onSurface
                                 font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.small
                                 elide: Text.ElideRight

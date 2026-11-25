@@ -346,6 +346,7 @@ class MochiTokens : public QObject {
     Q_PROPERTY(qreal shortcutRadius MEMBER m_shortcutRadius CONSTANT)
     Q_PROPERTY(qreal shortcutLine MEMBER m_shortcutLine CONSTANT)
     Q_PROPERTY(int checkSize MEMBER m_checkSize CONSTANT)
+    Q_PROPERTY(int emptyImageHeight MEMBER m_emptyImageHeight CONSTANT)
 
 public:
     explicit MochiTokens(QObject* parent = nullptr) : QObject(parent) {}
@@ -381,6 +382,7 @@ private:
     qreal m_shortcutRadius = 7;
     qreal m_shortcutLine = 2;
     int m_checkSize = 24;
+    int m_emptyImageHeight = 140;
 };
 
 class TokensSingleton : public QObject {

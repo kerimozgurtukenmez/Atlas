@@ -39,6 +39,9 @@ Item {
         || ((root.activeTab.isSplit && root.paneIndex === 1 ? root.activeTab.splitPath : root.activeTab.currentPath).indexOf("trash:") !== -1)
     )
 
+    // MochiFile: sutun basliklari kucuk, kalin, harf aralikli
+    readonly property font headerFont: Colours.mochi ? Tokens.font.label.builders.small.weight(Font.Black).letterSpacing(Tokens.mochi.sectionSpacing).build() : Tokens.font.label.medium
+
     function forceActiveFocus() {
         listView.forceActiveFocus();
     }
@@ -338,7 +341,17 @@ Item {
             Layout.fillWidth: true
             implicitHeight: 36
             radius: Tokens.rounding.small
-            color: Colours.tPalette.m3surfaceContainerHigh
+            // MochiFile: mochi'de baslik satiri zeminsiz, altta ince cizgi
+            color: Colours.mochi ? "transparent" : Colours.tPalette.m3surfaceContainerHigh
+
+            Rectangle {
+                visible: Colours.mochi
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                height: Tokens.mochi.hair
+                color: Colours.palette.m3outlineVariant
+            }
 
             RowLayout {
                 id: headerRow
@@ -364,7 +377,7 @@ Item {
                         StyledText {
                             Layout.fillWidth: true
                             text: qsTr("Name")
-                            font: Tokens.font.label.medium
+                            font: root.headerFont
                             color: Colours.palette.m3onSurface
                             elide: Text.ElideRight
                         }
@@ -413,7 +426,7 @@ Item {
                             StyledText {
                                 Layout.fillWidth: true
                                 text: headerCell.spec.label
-                                font: Tokens.font.label.medium
+                                font: root.headerFont
                                 color: headerCell.spec.muted ? Colours.palette.m3onSurfaceVariant : Colours.palette.m3onSurface
                                 elide: Text.ElideRight
                             }
@@ -670,8 +683,13 @@ Item {
                 width: listView.width
                 implicitHeight: root.rowHeight
 
-                radius: Tokens.rounding.small
-                color: folderDropArea.containsDrag
+                radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.small
+                // MochiFile: secili satir acik pembe + pembe cizgi, zebra yok
+                border.width: Colours.mochi && (isSelected || folderDropArea.containsDrag) ? Tokens.mochi.thin : 0
+                border.color: Colours.palette.m3primary
+                color: Colours.mochi
+                    ? (folderDropArea.containsDrag || isSelected ? Colours.palette.m3primaryContainer : (rowHover.containsMouse ? Colours.palette.m3surfaceContainerLow : "transparent"))
+                    : folderDropArea.containsDrag
                     ? Colours.palette.m3primaryContainer
                     : (isSelected ? Colours.palette.m3secondaryContainer : (rowHover.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : (index % 2 === 1 ? Qt.alpha(Colours.tPalette.m3surfaceContainerHigh, 0.3) : Qt.alpha(Colours.tPalette.m3surfaceContainerHigh, 0))))
 
@@ -976,8 +994,8 @@ Item {
                                 if (rowItem.modelData.isSymLink) name += " ↳"
                                 return FileNameHelper.elideFileName(name, this, width, font)
                             }
-                            color: rowItem.isSelected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
-                            font: Tokens.font.body.small
+                            color: rowItem.isSelected && !Colours.mochi ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                            font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.small
                             elide: Text.ElideRight
                         }
                     }

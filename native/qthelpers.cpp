@@ -5,6 +5,12 @@
 #include "theme/tokens.hpp"
 
 #include <QBuffer>
+#include <QDir>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QStandardPaths>
+#include <QTranslator>
 #include <QClipboard>
 #include <QDrag>
 #include <QFileInfo>
@@ -54,6 +60,58 @@ static void adoptPreviousSettings() {
     target.sync();
 }
 
+// MochiFile: arayuz metinleri icin JSON cevirmen. QML'deki qsTr("Ingilizce")
+// cagrilari i18n/<dil>.json icindeki "strings" eslemesinden cevrilir; olmayan
+// metin Ingilizce kalir. Dil: Cindy-Dots ayari (~/.config/cindy-dots/settings.json
+// "language": auto/tr/en), yoksa ya da auto ise sistem dili.
+class JsonTranslator : public QTranslator {
+public:
+    bool loadJson(const QString& path) {
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly))
+            return false;
+        const QJsonObject strings = QJsonDocument::fromJson(file.readAll()).object().value("strings").toObject();
+        for (auto it = strings.begin(); it != strings.end(); ++it)
+            m_strings.insert(it.key(), it.value().toString());
+        return !m_strings.isEmpty();
+    }
+
+    QString translate(const char*, const char* sourceText, const char*, int) const override {
+        return m_strings.value(QString::fromUtf8(sourceText));
+    }
+
+    bool isEmpty() const override { return m_strings.isEmpty(); }
+
+private:
+    QHash<QString, QString> m_strings;
+};
+
+static QString mochiLanguage() {
+    const QString settingsPath = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)
+        + "/cindy-dots/settings.json";
+    QFile file(settingsPath);
+    QString lang;
+    if (file.open(QIODevice::ReadOnly))
+        lang = QJsonDocument::fromJson(file.readAll()).object().value("language").toString();
+    if (lang.isEmpty() || lang == "auto")
+        lang = QLocale::system().name().section('_', 0, 0);
+    return lang.toLower();
+}
+
+static void installMochiTranslator() {
+    const QString lang = mochiLanguage();
+    if (lang.isEmpty() || lang == "en")
+        return;
+    auto* translator = new JsonTranslator;
+    if (translator->loadJson(":/qt/qml/atlas/i18n/" + lang + ".json")) {
+        translator->setParent(QCoreApplication::instance());
+        QCoreApplication::installTranslator(translator);
+        QLocale::setDefault(QLocale(lang));
+    } else {
+        delete translator;
+    }
+}
+
 void setupApplication(const QString& version) {
     // MochiFile: gorunen ad ve Wayland app_id (desktop dosyasi adi)
     QGuiApplication::setApplicationName("mochifile");
@@ -63,6 +121,7 @@ void setupApplication(const QString& version) {
     QGuiApplication::setApplicationVersion(version);
 
     adoptPreviousSettings();
+    installMochiTranslator();
 
     QFontDatabase::addApplicationFont(":/qt/qml/atlas/assets/fonts/GoogleSansFlex.ttf");
     QFontDatabase::addApplicationFont(":/qt/qml/atlas/assets/fonts/MaterialSymbolsRounded.ttf");

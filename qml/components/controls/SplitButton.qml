@@ -31,7 +31,10 @@ Row {
     readonly property alias expandBtn: expandBtn
 
     // Contrast fix: Elevate tonal/surface container tokens above the parent surface
+    // MochiFile: mochi'de iki parca da klavye tusu (tus zemini + murekkep yazi)
     property color colour: {
+        if (Colours.mochi)
+            return Colours.palette.m3surfaceContainerHigh;
         switch (type) {
             case SplitButton.Filled: return Colours.palette.m3primary
             case SplitButton.Elevated: return Colours.palette.m3surfaceContainerHighest
@@ -40,6 +43,8 @@ Row {
         }
     }
     property color textColour: {
+        if (Colours.mochi)
+            return Colours.palette.m3onSurface;
         switch (type) {
             case SplitButton.Filled: return Colours.palette.m3onPrimary
             case SplitButton.Elevated: return Colours.palette.m3onSurface
@@ -50,7 +55,7 @@ Row {
     property color disabledColour: Qt.alpha(Colours.palette.m3onSurface, 0.1)
     property color disabledTextColour: Qt.alpha(Colours.palette.m3onSurface, 0.38)
 
-    spacing: Math.floor(Tokens.spacing.extraSmall / 2)
+    spacing: Colours.mochi ? Tokens.spacing.extraSmall : Math.floor(Tokens.spacing.extraSmall / 2)
 
     // TTY: one bracketed choice, `[ label ▾ ]`, opening the menu wherever it's clicked
     Item {
@@ -84,10 +89,12 @@ Row {
 
     StyledRect {
         visible: !Colours.tty
-        radius: implicitHeight / 2 * Math.min(1, Tokens.rounding.scale)
-        topRightRadius: Tokens.rounding.medium / 2
-        bottomRightRadius: Tokens.rounding.medium / 2
+        radius: Colours.mochi ? Tokens.mochi.keyRadius : implicitHeight / 2 * Math.min(1, Tokens.rounding.scale)
+        topRightRadius: Colours.mochi ? Tokens.mochi.keyRadius / 2 : Tokens.rounding.medium / 2
+        bottomRightRadius: Colours.mochi ? Tokens.mochi.keyRadius / 2 : Tokens.rounding.medium / 2
         color: root.disabled ? root.disabledColour : root.colour
+        mochiKey: true
+        mochiDown: stateLayer.pressed
 
         implicitWidth: Math.max(root.minLeftWidth, textRow.implicitWidth + root.horizontalPadding * 2)
         implicitHeight: expandBtn.implicitHeight
@@ -145,10 +152,12 @@ Row {
 
         property real rad: root.expanded ? implicitHeight / 2 * Math.min(1, Tokens.rounding.scale) : Tokens.rounding.medium / 2
 
-        radius: implicitHeight / 2 * Math.min(1, Tokens.rounding.scale)
-        topLeftRadius: rad
-        bottomLeftRadius: rad
+        radius: Colours.mochi ? Tokens.mochi.keyRadius : implicitHeight / 2 * Math.min(1, Tokens.rounding.scale)
+        topLeftRadius: Colours.mochi ? Tokens.mochi.keyRadius / 2 : rad
+        bottomLeftRadius: Colours.mochi ? Tokens.mochi.keyRadius / 2 : rad
         color: root.disabled ? root.disabledColour : root.colour
+        mochiKey: true
+        mochiDown: expandStateLayer.pressed || root.expanded
 
         implicitWidth: implicitHeight
         implicitHeight: expandIcon.implicitHeight + root.verticalPadding * 2

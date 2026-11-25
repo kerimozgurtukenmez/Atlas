@@ -9,6 +9,6 @@ StyledText {
 
     text: jp.length > 0 ? jp + " - " + title : title
     color: Colours.palette.m3onSurface
-    font: Tokens.font.title.builders.small.family(Tokens.font.headline.small.family).build()
+    font: Tokens.font.title.small
     elide: Text.ElideRight
 }

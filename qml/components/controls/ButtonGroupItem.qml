@@ -19,7 +19,7 @@ StyledRect {
 
     property color activeColor: (parent && "activeColor" in parent && parent.activeColor !== undefined)
         ? parent.activeColor
-        : Colours.palette.m3primaryContainer
+        : (Colours.mochi ? Colours.palette.m3primary : Colours.palette.m3primaryContainer)
     property color inactiveColor: (parent && "inactiveColor" in parent && parent.inactiveColor !== undefined)
         ? parent.inactiveColor
         : Colours.tPalette.m3surfaceContainerHigh
@@ -28,7 +28,7 @@ StyledRect {
         : Colours.tPalette.m3surfaceContainerHighest
     property color activeOnColor: (parent && "activeOnColor" in parent && parent.activeOnColor !== undefined)
         ? parent.activeOnColor
-        : Colours.palette.m3onPrimaryContainer
+        : (Colours.mochi ? Colours.palette.m3onPrimary : Colours.palette.m3onPrimaryContainer)
     property color inactiveOnColor: (parent && "inactiveOnColor" in parent && parent.inactiveOnColor !== undefined)
         ? parent.inactiveOnColor
         : Colours.palette.m3onSurface
@@ -38,6 +38,10 @@ StyledRect {
     readonly property string activeIcon: (root.checked && root.showCheckmark)
         ? (root.checkedIcon.length > 0 ? root.checkedIcon : "check")
         : root.icon
+
+    // MochiFile: secili parca murekkep cizgili pembe cip
+    mochiLine: root.checked
+    mochiShadow: Colours.mochi && root.checked ? Tokens.mochi.smallShadow - 1 : 0
 
     signal clicked()
 
@@ -60,10 +64,10 @@ StyledRect {
         }
     }
 
-    topLeftRadius: (root.checked || (root.horizontal ? root.first : root.first)) ? Tokens.rounding.large : Tokens.rounding.extraSmall
-    topRightRadius: (root.checked || (root.horizontal ? root.last : root.first)) ? Tokens.rounding.large : Tokens.rounding.extraSmall
-    bottomLeftRadius: (root.checked || (root.horizontal ? root.first : root.last)) ? Tokens.rounding.large : Tokens.rounding.extraSmall
-    bottomRightRadius: (root.checked || (root.horizontal ? root.last : root.last)) ? Tokens.rounding.large : Tokens.rounding.extraSmall
+    topLeftRadius: Colours.mochi ? Tokens.mochi.rowRadius : (root.checked || (root.horizontal ? root.first : root.first)) ? Tokens.rounding.large : Tokens.rounding.extraSmall
+    topRightRadius: Colours.mochi ? Tokens.mochi.rowRadius : (root.checked || (root.horizontal ? root.last : root.first)) ? Tokens.rounding.large : Tokens.rounding.extraSmall
+    bottomLeftRadius: Colours.mochi ? Tokens.mochi.rowRadius : (root.checked || (root.horizontal ? root.first : root.last)) ? Tokens.rounding.large : Tokens.rounding.extraSmall
+    bottomRightRadius: Colours.mochi ? Tokens.mochi.rowRadius : (root.checked || (root.horizontal ? root.last : root.last)) ? Tokens.rounding.large : Tokens.rounding.extraSmall
 
     Behavior on topLeftRadius {
         Anim {

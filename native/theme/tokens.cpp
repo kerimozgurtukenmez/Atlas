@@ -263,9 +263,10 @@ void TokensSingleton::setMochi(bool mochi) {
     if (m_tty)
         return;
     if (mochi) {
-        m_font->setFamily(QStringLiteral("Zen Maru Gothic"));
-        m_font->headline()->setFamily(QStringLiteral("Mochiy Pop One"));
-        m_font->title()->setFamily(QStringLiteral("Mochiy Pop One"));
+        // Yedekler tasarimdaki gibi: Nunito / M PLUS Rounded (Turkce harfler icin)
+        m_font->setFamily(QStringLiteral("Zen Maru Gothic,Nunito"));
+        m_font->headline()->setFamily(QStringLiteral("Mochiy Pop One,Rounded Mplus 1c"));
+        m_font->title()->setFamily(QStringLiteral("Mochiy Pop One,Rounded Mplus 1c"));
     } else {
         m_font->setFamily(QStringLiteral("Google Sans Flex"));
     }

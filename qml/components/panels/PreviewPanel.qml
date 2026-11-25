@@ -78,7 +78,8 @@ StyledRect {
             spacing: Tokens.spacing.small
 
             StyledText {
-                Layout.preferredWidth: infoRow.width * 0.38
+                // panel genisligi sabit: satir icinden genislik okumak dongu yapar
+                Layout.preferredWidth: root.implicitWidth * 0.32
                 text: infoRow.rowLabel.replace(/:$/, "")
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.label.builders.small.weight(Font.Black).build()
@@ -227,7 +228,7 @@ StyledRect {
                     Layout.fillWidth: true
                     text: meta.name.length > 0 ? meta.name : qsTr("No Selection")
                     color: Colours.palette.m3onSurface
-                    font: Colours.mochi ? Tokens.font.title.builders.medium.family(Tokens.font.headline.small.family).build() : Tokens.font.title.small
+                    font: Colours.mochi ? Tokens.font.title.medium : Tokens.font.title.small
                     wrapMode: Text.Wrap
                 }
 

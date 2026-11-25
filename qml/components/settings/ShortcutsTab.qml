@@ -169,7 +169,7 @@ Item {
 
                         StyledText {
                             Layout.topMargin: Tokens.spacing.small
-                            text: modelData.name
+                            text: qsTr(modelData.name)
                             color: Colours.palette.m3primary
                             font: Tokens.font.label.large
                         }
@@ -191,13 +191,13 @@ Item {
                                     last: index === itemsRepeater.count - 1
                                     actionId: modelData.id
                                     icon: modelData.icon
-                                    text: modelData.label
-                                    subtext: modelData.description
+                                    text: qsTr(modelData.label)
+                                    subtext: qsTr(modelData.description)
                                     sequences: modelData.sequences
                                     modified: modelData.modified
 
-                                    onEditRequested: recorder.open(modelData.id, modelData.label, true, modelData.sequences.length > 0)
-                                    onAddRequested: recorder.open(modelData.id, modelData.label, false, true)
+                                    onEditRequested: recorder.open(modelData.id, qsTr(modelData.label), true, modelData.sequences.length > 0)
+                                    onAddRequested: recorder.open(modelData.id, qsTr(modelData.label), false, true)
                                     onRemoveRequested: seq => ShortcutManager.removeSequence(modelData.id, seq)
                                     onResetRequested: ShortcutManager.resetAction(modelData.id)
                                 }

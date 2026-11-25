@@ -9,6 +9,9 @@ StyledRect {
     property string icon: ""
     property string label: ""
     property bool on: false
+    // yatay: ikon solda, yazi sagda (tek satirlik tus)
+    property bool horizontal: false
+    readonly property real implicitContentWidth: content.implicitWidth + Tokens.padding.large * 2
     readonly property alias hovered: area.containsMouse
     signal clicked()
 
@@ -18,9 +21,13 @@ StyledRect {
     mochiDown: area.pressed || on
     color: on ? Colours.palette.m3primary : (area.containsMouse ? Colours.palette.m3surfaceContainerHighest : Colours.palette.m3surfaceContainerHigh)
 
-    ColumnLayout {
+    GridLayout {
+        id: content
+
         anchors.centerIn: parent
-        spacing: 0
+        columns: root.horizontal ? 2 : 1
+        rowSpacing: 0
+        columnSpacing: Tokens.spacing.small
 
         MaterialIcon {
             Layout.alignment: Qt.AlignHCenter

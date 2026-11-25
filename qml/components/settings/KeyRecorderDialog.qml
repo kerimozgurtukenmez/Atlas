@@ -280,7 +280,7 @@ MouseArea {
 
                         StyledText {
                             Layout.fillWidth: true
-                            text: modelData.label
+                            text: qsTr(modelData.label)
                             color: Colours.palette.m3onSurface
                             font: Tokens.font.body.small
                             elide: Text.ElideRight

@@ -415,8 +415,13 @@ Item {
                 width: parent.width - 6
                 height: parent.height - 4
 
-                radius: Tokens.rounding.small
-                color: folderDropArea.containsDrag
+                radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.small
+                // MochiFile: secili oge acik pembe + pembe cizgi
+                border.width: Colours.mochi && (compDelegate.isSelected || folderDropArea.containsDrag) ? Tokens.mochi.thin : 0
+                border.color: Colours.palette.m3primary
+                color: Colours.mochi
+                    ? (folderDropArea.containsDrag || compDelegate.isSelected ? Colours.palette.m3primaryContainer : (compHover.containsMouse ? Colours.palette.m3surfaceContainerLow : "transparent"))
+                    : folderDropArea.containsDrag
                     ? Colours.palette.m3primaryContainer
                     : (compDelegate.isSelected ? Colours.palette.m3secondaryContainer : (compHover.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : Qt.alpha(Colours.tPalette.m3surfaceContainerHigh, 0)))
 
@@ -639,8 +644,8 @@ Item {
                             var name = compDelegate.modelData.name
                             return FileNameHelper.elideFileName(name, this, width, font)
                         }
-                        color: compDelegate.isSelected ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
-                        font: Tokens.font.body.small
+                        color: compDelegate.isSelected && !Colours.mochi ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                        font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.small
                         elide: Text.ElideRight
                     }
                 }

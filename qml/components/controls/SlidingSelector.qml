@@ -99,6 +99,7 @@ StyledRect {
 
                 RowLayout {
                     anchors.centerIn: parent
+                    width: Math.min(implicitWidth, entry.width - Tokens.padding.small * 2)
                     spacing: 4
 
                     MaterialIcon {
@@ -122,6 +123,8 @@ StyledRect {
                     }
 
                     StyledText {
+                        Layout.fillWidth: true
+                        elide: Text.ElideRight
                         text: entry.modelData[root.labelKey] ?? ""
                         color: entry.contentColour
                         font: entry.isCurrent
