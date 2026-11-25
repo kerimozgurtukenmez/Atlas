@@ -221,8 +221,8 @@ Item {
                             // Completed Tasks Section
                             StyledText {
                                 text: qsTr("Recent Operations")
-                                color: Colours.palette.m3primary
-                                font: Tokens.font.label.medium
+                                color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.medium
                                 visible: FileOperations.completedTasks.length > 0
                                 width: tasksCol.width
                             }
@@ -404,8 +404,8 @@ Item {
                             StyledText {
                                 anchors.centerIn: parent
                                 text: qsTr("Clear")
-                                color: Colours.palette.m3primary
-                                font: Tokens.font.label.medium
+                                color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3primary
+                                font: Colours.mochi ? Tokens.font.label.builders.medium.weight(Font.Black).build() : Tokens.font.label.medium
                             }
 
                             MouseArea {
