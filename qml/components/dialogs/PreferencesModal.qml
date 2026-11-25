@@ -310,7 +310,113 @@ MouseArea {
                                         font: Colours.mochi ? Tokens.font.title.small : Tokens.font.label.large
                                     }
 
+                                    // MochiFile: mochi'de stil secimi uc onizleme karti
+                                    RowLayout {
+                                        Layout.fillWidth: true
+                                        visible: Colours.mochi
+                                        spacing: Tokens.spacing.medium
+
+                                        Repeater {
+                                            model: [
+                                                { style: 3, name: qsTr("mochi ♡"), hint: qsTr("Sticker look, follows the shell scheme") },
+                                                { style: 1, name: qsTr("Material 3"), hint: qsTr("The original Atlas look") },
+                                                { style: 2, name: qsTr("TTY"), hint: qsTr("Like a terminal, no corners") }
+                                            ]
+
+                                            StyledRect {
+                                                id: styleCard
+
+                                                required property var modelData
+                                                readonly property bool current: Colours.style === modelData.style
+
+                                                Layout.fillWidth: true
+                                                Layout.preferredWidth: 1
+                                                implicitHeight: cardCol.implicitHeight + Tokens.padding.medium * 2
+                                                radius: Tokens.mochi.itemRadius
+                                                mochiKey: current
+                                                mochiLine: !current
+                                                mochiShadow: current ? Tokens.mochi.keyShadow : 0
+                                                mochiBorderColour: current ? Colours.palette.m3outline : Colours.palette.m3outlineVariant
+                                                color: current ? Colours.palette.m3primaryContainer : Colours.palette.m3surface
+
+                                                ColumnLayout {
+                                                    id: cardCol
+
+                                                    anchors.fill: parent
+                                                    anchors.margins: Tokens.padding.medium
+                                                    spacing: Tokens.spacing.small
+
+                                                    // kucuk onizleme
+                                                    Rectangle {
+                                                        Layout.fillWidth: true
+                                                        implicitHeight: Tokens.mochi.stylePreviewHeight
+                                                        radius: styleCard.modelData.style === 2 ? 0 : Tokens.mochi.rowRadius
+                                                        border.width: Tokens.mochi.thin
+                                                        border.color: Colours.palette.m3outline
+                                                        color: styleCard.modelData.style === 2 ? Colours.palette.m3outline : Colours.palette.m3surface
+                                                        clip: true
+
+                                                        // mochi: pembe benekler
+                                                        Grid {
+                                                            visible: styleCard.modelData.style === 3
+                                                            anchors.centerIn: parent
+                                                            columns: 10
+                                                            spacing: Tokens.spacing.small
+
+                                                            Repeater {
+                                                                model: 30
+
+                                                                Rectangle {
+                                                                    width: Tokens.spacing.small
+                                                                    height: width
+                                                                    radius: width / 2
+                                                                    color: Colours.palette.m3primary
+                                                                }
+                                                            }
+                                                        }
+
+                                                        // Material 3: ust serit
+                                                        Rectangle {
+                                                            visible: styleCard.modelData.style === 1
+                                                            anchors.left: parent.left
+                                                            anchors.right: parent.right
+                                                            anchors.top: parent.top
+                                                            anchors.margins: parent.border.width
+                                                            height: parent.height / 3
+                                                            topLeftRadius: parent.radius
+                                                            topRightRadius: parent.radius
+                                                            color: Colours.palette.m3secondaryContainer
+                                                        }
+                                                    }
+
+                                                    StyledText {
+                                                        Layout.fillWidth: true
+                                                        text: styleCard.modelData.name
+                                                        color: Colours.palette.m3onSurface
+                                                        font: Tokens.font.body.builders.small.weight(Font.Black).build()
+                                                        elide: Text.ElideRight
+                                                    }
+
+                                                    StyledText {
+                                                        Layout.fillWidth: true
+                                                        text: styleCard.modelData.hint
+                                                        color: Colours.palette.m3onSurfaceVariant
+                                                        font: Tokens.font.label.builders.small.weight(Font.Bold).build()
+                                                        wrapMode: Text.Wrap
+                                                    }
+                                                }
+
+                                                MouseArea {
+                                                    anchors.fill: parent
+                                                    cursorShape: Qt.PointingHandCursor
+                                                    onClicked: Colours.style = styleCard.modelData.style
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     SplitButtonRow {
+                                        visible: !Colours.mochi
                                         first: true
                                         last: true
                                         label: qsTr("Style")

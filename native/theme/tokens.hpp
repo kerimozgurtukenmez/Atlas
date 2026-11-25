@@ -349,6 +349,7 @@ class MochiTokens : public QObject {
     Q_PROPERTY(int emptyImageHeight MEMBER m_emptyImageHeight CONSTANT)
     Q_PROPERTY(int viewerArrow MEMBER m_viewerArrow CONSTANT)
     Q_PROPERTY(qreal viewerDarken MEMBER m_viewerDarken CONSTANT)
+    Q_PROPERTY(int stylePreviewHeight MEMBER m_stylePreviewHeight CONSTANT)
 
 public:
     explicit MochiTokens(QObject* parent = nullptr) : QObject(parent) {}
@@ -387,6 +388,7 @@ private:
     int m_emptyImageHeight = 140;
     int m_viewerArrow = 56;
     qreal m_viewerDarken = 2.0;
+    int m_stylePreviewHeight = 64;
 };
 
 class TokensSingleton : public QObject {
