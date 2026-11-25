@@ -424,7 +424,7 @@ impl FileOperations {
         if reset {
             progress.as_mut().set_progress(0.0);
         }
-        progress.set_status_text(status);
+        progress.set_status_text(&native::tr(status, &[]));
     }
 
     fn end_progress(&self, complete: bool) {
@@ -436,7 +436,7 @@ impl FileOperations {
     }
 
     fn finished(self: Pin<&mut Self>, success: bool, message: &str) {
-        self.operation_finished(success, &qs(message));
+        self.operation_finished(success, &qs(&native::tr(message, &[])));
     }
 
     // ---- Properties ----
@@ -488,6 +488,8 @@ impl FileOperations {
     // ---- Completed tasks ----
 
     pub fn push_completed_task(mut self: Pin<&mut Self>, success: bool, message: &str, url: &str) {
+        // MochiFile: sabit mesajlar ceviriden gecer (kaliplilar zaten cevrilmis gelir)
+        let message = &native::tr(message, &[]);
         let key = format!("{message}\n{url}");
         if key == self.last_completed_key && self.last_completed_at.is_some_and(|t| t.elapsed().as_millis() < 1000) {
             return;
@@ -728,7 +730,7 @@ impl FileOperations {
             n += 1;
         }
         if std::fs::write(&file_path, data).is_err() {
-            self.finished(false, &format!("Failed to create image file: {file_path}"));
+            self.finished(false, &native::tr("Failed to create image file: %1", &[&file_path]));
             return QString::default();
         }
         qs(&file_path)
@@ -751,7 +753,7 @@ impl FileOperations {
             let name = paths::file_name(&archive);
             let _ = thread.queue(move |ops| {
                 ops.end_progress(false);
-                let message = if success { format!("Extracted {name}") } else { "Extraction failed".to_string() };
+                let message = if success { native::tr("Extracted %1", &[&name]) } else { "Extraction failed".to_string() };
                 ops.finished(success, &message);
             });
         });
@@ -772,7 +774,7 @@ impl FileOperations {
             let name = paths::file_name(&dest);
             let _ = thread.queue(move |ops| {
                 ops.end_progress(false);
-                let message = if success { format!("Created {name}") } else { "Archive creation failed".to_string() };
+                let message = if success { native::tr("Created %1", &[&name]) } else { "Archive creation failed".to_string() };
                 ops.finished(success, &message);
             });
         });
@@ -1025,14 +1027,14 @@ impl FileOperations {
         let message = if list.len() == 1 {
             "Removed one item from Recent".to_string()
         } else {
-            format!("Removed {} items from Recent", list.len())
+            native::tr("Removed %1 items from Recent", &[&list.len().to_string()])
         };
         self.finished(true, &message);
     }
 
     fn restore_impl(self: Pin<&mut Self>, target: &str) {
         if let Some(name) = fileops::restore_from_trash(target) {
-            self.finished(true, &format!("Restored {name}"));
+            self.finished(true, &native::tr("Restored %1", &[&name]));
         }
     }
 
@@ -1082,11 +1084,11 @@ impl FileOperations {
         for (path, name) in list.iter().zip(&names) {
             let name = name.trim();
             if !paths::exists(path) {
-                self.finished(false, &format!("Rename failed: {} no longer exists", paths::file_name(path)));
+                self.finished(false, &native::tr("Rename failed: %1 no longer exists", &[&paths::file_name(path)]));
                 return;
             }
             if name.is_empty() || name.contains('/') {
-                self.finished(false, &format!("Rename failed: {name} is not a valid name"));
+                self.finished(false, &native::tr("Rename failed: %1 is not a valid name", &[&name]));
                 return;
             }
             let abs = paths::clean_path(path);
@@ -1095,7 +1097,7 @@ impl FileOperations {
                 continue;
             }
             if targets.contains(&target) {
-                self.finished(false, &format!("Rename failed: {name} would be used twice"));
+                self.finished(false, &native::tr("Rename failed: %1 would be used twice", &[&name]));
                 return;
             }
             sources.push(abs);
@@ -1107,7 +1109,7 @@ impl FileOperations {
         }
         for target in &targets {
             if paths::exists(target) && !sources.contains(target) {
-                self.finished(false, &format!("Rename failed: {} already exists", paths::file_name(target)));
+                self.finished(false, &native::tr("Rename failed: %1 already exists", &[&paths::file_name(target)]));
                 return;
             }
         }
@@ -1124,7 +1126,7 @@ impl FileOperations {
                 for (j, s) in staged.iter().enumerate().rev() {
                     let _ = std::fs::rename(s, &sources[j]);
                 }
-                self.finished(false, &format!("Rename failed: could not rename {}", paths::file_name(src)));
+                self.finished(false, &native::tr("Rename failed: could not rename %1", &[&paths::file_name(src)]));
                 return;
             }
             staged.push(temp);
@@ -1137,7 +1139,7 @@ impl FileOperations {
                 for (j, s) in staged.iter().enumerate().rev() {
                     let _ = std::fs::rename(s, &sources[j]);
                 }
-                self.finished(false, &format!("Rename failed: could not rename {}", paths::file_name(&sources[i])));
+                self.finished(false, &native::tr("Rename failed: could not rename %1", &[&paths::file_name(&sources[i])]));
                 return;
             }
         }
@@ -1147,7 +1149,7 @@ impl FileOperations {
         action.dest_paths = targets;
         let replay = self.replay;
         self.as_mut().record_undo(action, replay);
-        self.finished(true, &if count == 1 { "Renamed 1 item".to_string() } else { format!("Renamed {count} items") });
+        self.finished(true, &if count == 1 { "Renamed 1 item".to_string() } else { native::tr("Renamed %1 items", &[&count.to_string()]) });
     }
 
     fn create_from_template(mut self: Pin<&mut Self>, template_path: &QString, parent_dir: &QString, name: &QString) {
@@ -1164,11 +1166,11 @@ impl FileOperations {
         }
         let destination = format!("{parent}/{trimmed}");
         if paths::exists(&destination) {
-            self.finished(false, &format!("{trimmed} already exists"));
+            self.finished(false, &native::tr("%1 already exists", &[&trimmed]));
             return;
         }
         if std::fs::copy(&template, &destination).is_err() {
-            self.finished(false, &format!("Could not create {trimmed}"));
+            self.finished(false, &native::tr("Could not create %1", &[&trimmed]));
             return;
         }
         if let Ok(meta) = std::fs::metadata(&destination) {
@@ -1183,7 +1185,7 @@ impl FileOperations {
         action.name = trimmed.clone();
         let replay = self.replay;
         self.as_mut().record_undo(action, replay);
-        self.finished(true, &format!("Created {trimmed}"));
+        self.finished(true, &native::tr("Created %1", &[&trimmed]));
     }
 
     fn create_directory_impl(mut self: Pin<&mut Self>, parent_dir: &str, name: &str) {

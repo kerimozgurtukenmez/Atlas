@@ -57,7 +57,7 @@ pub mod qobject {
     impl cxx_qt::Threading for GitManager {}
 }
 
-use crate::bridge::native::{qs, qsl, to_qvariant_list};
+use crate::bridge::native::{self, qs, qsl, to_qvariant_list};
 use crate::core::{desktop, paths};
 use cxx_qt::{CxxQtType, Threading};
 use cxx_qt_lib::{QList, QString, QStringList, QVariant};
@@ -186,7 +186,7 @@ impl GitManager {
         {
             let mut rust = self.as_mut().rust_mut();
             rust.is_operating = operating;
-            rust.last_status_message = qs(message);
+            rust.last_status_message = qs(&native::tr(message, &[]));
         }
         self.as_mut().operating_changed();
         self.status_message_changed();
@@ -226,11 +226,11 @@ impl GitManager {
         if branch.is_empty() {
             return;
         }
-        let start = format!("Switching to branch {branch}...");
+        let start = native::tr("Switching to branch %1...", &[&branch]);
         let args = vec!["switch".to_string(), branch.clone()];
         self.run_operation(start, args, move |ok, _, err| {
             if ok {
-                format!("Switched to {branch}")
+                native::tr("Switched to %1", &[&branch])
             } else if err.is_empty() {
                 "Failed to switch branch".into()
             } else {

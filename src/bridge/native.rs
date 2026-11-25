@@ -37,6 +37,8 @@ pub mod ffi {
         fn set_tty_tokens(tty: bool, preferred_mono: &QString);
         #[cxx_name = "setMochiTokens"]
         fn set_mochi_tokens(mochi: bool);
+        #[cxx_name = "translateText"]
+        fn translate_text(text: &QString) -> QString;
         #[cxx_name = "fontFamilies"]
         fn font_families() -> QStringList;
 
@@ -124,6 +126,30 @@ fn native_drag_finished() {
 }
 
 // ---- Strings ----
+
+/// MochiFile: arayuz metnini cevirir (QML'deki qsTr ile ayni JSON cevirmen).
+/// Kalip "%1", "%2"... yer tutuculu; args sirayla yerlestirilir. Ceviri yoksa
+/// Ingilizce kalip kullanilir. Qt'nin translate'i is parcaciklarindan cagrilabilir.
+pub fn tr(template: &str, args: &[&str]) -> String {
+    let translated = ffi::translate_text(&qs(template)).to_string();
+    let pattern = if translated.is_empty() { template.to_string() } else { translated };
+    // Tek geciste yerlestir: deger icindeki "%2" gibi metinler tekrar islenmesin
+    let mut out = String::with_capacity(pattern.len());
+    let mut chars = pattern.chars().peekable();
+    while let Some(c) = chars.next() {
+        if c == '%' {
+            if let Some(d) = chars.peek().and_then(|d| d.to_digit(10)) {
+                if d >= 1 && (d as usize) <= args.len() {
+                    chars.next();
+                    out.push_str(args[d as usize - 1]);
+                    continue;
+                }
+            }
+        }
+        out.push(c);
+    }
+    out
+}
 
 pub fn qs(s: &str) -> QString {
     QString::from(s)

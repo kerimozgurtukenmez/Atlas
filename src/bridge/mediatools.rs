@@ -174,7 +174,7 @@ fn video_dimensions(path: &str) -> Option<(i32, i32)> {
 
 fn add_task(success: bool, message: &str) {
     if let Some(ops) = registry::FILE_OPERATIONS.get() {
-        ops.push_completed_task(success, message, "");
+        ops.push_completed_task(success, &native::tr(message, &[]), "");
     }
 }
 
@@ -239,7 +239,7 @@ impl MediaTools {
             return;
         }
         if tool.is_empty() {
-            add_task(false, &format!("{description} failed - required tool not found"));
+            add_task(false, &native::tr("%1 failed - required tool not found", &[&description]));
             return;
         }
         self.as_mut().set_busy(true);
@@ -253,9 +253,9 @@ impl MediaTools {
                 tools.as_mut().set_busy(false);
                 tools.set_status("");
                 let message = if success {
-                    format!("{description} - saved as {}", paths::file_name(&output))
+                    native::tr("%1 - saved as %2", &[&description, &paths::file_name(&output)])
                 } else {
-                    format!("{description} failed")
+                    native::tr("%1 failed", &[&description])
                 };
                 add_task(success, &message);
             });
@@ -288,13 +288,13 @@ impl MediaTools {
         }
         args.extend(audio_codec_args(&ext).into_iter().map(String::from));
         args.push(output.clone());
-        self.ffmpeg_job(format!("Clipping {}", paths::file_name(&source)), args, output);
+        self.ffmpeg_job(native::tr("Clipping %1", &[&paths::file_name(&source)]), args, output);
     }
 
     fn convert_media(mut self: Pin<&mut Self>, source: &QString, format: &QString) {
         let source = source.to_string();
         let fmt = format.to_string().to_lowercase();
-        let description = format!("Converting {} to {}", paths::file_name(&source), format);
+        let description = native::tr("Converting %1 to %2", &[&paths::file_name(&source), &format.to_string()]);
         match kind_for(&source) {
             Kind::Video => {
                 let output = unique_output_path(&source, "", &fmt);
@@ -369,7 +369,7 @@ impl MediaTools {
             args.push("-an".into());
         }
         args.push(output.clone());
-        self.ffmpeg_job(format!("Rotating {}", paths::file_name(&source)), args, output);
+        self.ffmpeg_job(native::tr("Rotating %1", &[&paths::file_name(&source)]), args, output);
     }
 
     fn flip_media(self: Pin<&mut Self>, source: &QString, horizontal: bool) {
@@ -388,8 +388,8 @@ impl MediaTools {
             args.extend(audio_codec_args(&ext).into_iter().map(String::from));
         }
         args.push(output.clone());
-        let verb = if horizontal { "Flipping" } else { "Mirroring" };
-        self.ffmpeg_job(format!("{verb} {}", paths::file_name(&source)), args, output);
+        let verb = if horizontal { "Flipping %1" } else { "Mirroring %1" };
+        self.ffmpeg_job(native::tr(verb, &[&paths::file_name(&source)]), args, output);
     }
 
     fn circle_crop(self: Pin<&mut Self>, source: &QString) {
@@ -403,7 +403,7 @@ impl MediaTools {
             "format=rgba,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='255*lt(hypot(X-W/2\\,Y-H/2)\\,min(W,H)/2)'".into(),
             output.clone(),
         ];
-        self.ffmpeg_job(format!("Circle cropping {}", paths::file_name(&source)), args, output);
+        self.ffmpeg_job(native::tr("Circle cropping %1", &[&paths::file_name(&source)]), args, output);
     }
 
     fn set_aspect_ratio(self: Pin<&mut Self>, source: &QString, ratio_w: i32, ratio_h: i32, crop: bool) {
@@ -446,7 +446,7 @@ impl MediaTools {
             args.extend(audio_codec_args(&ext).into_iter().map(String::from));
         }
         args.push(output.clone());
-        self.ffmpeg_job(format!("Setting {} to {ratio_w}:{ratio_h}", paths::file_name(&source)), args, output);
+        self.ffmpeg_job(native::tr("Setting %1 to %2", &[&paths::file_name(&source), &format!("{ratio_w}:{ratio_h}")]), args, output);
     }
 
     fn kind_for(&self, source: &QString) -> i32 {

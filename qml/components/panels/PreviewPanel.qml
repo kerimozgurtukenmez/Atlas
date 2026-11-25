@@ -45,7 +45,8 @@ StyledRect {
         id: infoRow
 
         required property var modelData
-        readonly property string rowLabel: (infoRow.modelData.label ?? "").toString()
+        // Rust'tan gelen medya etiketleri de ceviriden gecer
+        readonly property string rowLabel: qsTr((infoRow.modelData.label ?? "").toString())
         readonly property string rowValue: {
             const v = infoRow.modelData.value;
             return v === undefined || v === null ? "" : String(v);

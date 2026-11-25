@@ -74,7 +74,7 @@ pub mod qobject {
     impl cxx_qt::Threading for NetworkManager {}
 }
 
-use crate::bridge::native::{qs, qsl};
+use crate::bridge::native::{self, qs, qsl};
 use crate::bridge::registry;
 use crate::core::desktop::DesktopFile;
 use crate::core::paths;
@@ -232,7 +232,7 @@ impl NetworkManager {
     ) {
         let host = host.to_string();
         if host.is_empty() {
-            self.connection_finished(false, &QString::default(), &qs("Host cannot be empty"));
+            self.connection_finished(false, &QString::default(), &qs(&native::tr("Host cannot be empty", &[])));
             return;
         }
         let scheme = scheme.to_string();
@@ -357,7 +357,7 @@ impl NetworkManager {
             }
             self.connection_finished(true, &qs(&mounted), &QString::default());
         } else {
-            let error = if stderr.is_empty() { "Failed to connect to remote server".to_string() } else { stderr };
+            let error = if stderr.is_empty() { native::tr("Failed to connect to remote server", &[]) } else { stderr };
             self.as_mut().rust_mut().last_error = qs(&error);
             self.as_mut().last_error_changed();
             self.connection_finished(false, &QString::default(), &qs(&error));

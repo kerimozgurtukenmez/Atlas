@@ -192,7 +192,7 @@ impl CatboxUploader {
             if completed {
                 ops.as_mut().push_completed_task(false, message, "");
             }
-            ops.operation_finished(false, &qs(message));
+            ops.operation_finished(false, &qs(&native::tr(message, &[])));
         }
     }
 
@@ -204,7 +204,7 @@ impl CatboxUploader {
         Self::with_progress(|mut p| {
             p.as_mut().set_running(false);
             p.as_mut().set_progress(0.0);
-            p.as_mut().set_status_text(final_status);
+            p.as_mut().set_status_text(&native::tr(final_status, &[]));
             p.set_current_item("");
         });
     }
@@ -238,7 +238,7 @@ impl CatboxUploader {
                 if let Some(mut ops) = registry::FILE_OPERATIONS.get() {
                     ops.as_mut().push_completed_task(
                         false,
-                        &format!("Skipped {name}: only existing files can be uploaded to {service}"),
+                        &native::tr("Skipped %1: only existing files can be uploaded to %2", &[&name, &service]),
                         "",
                     );
                 }
@@ -248,13 +248,13 @@ impl CatboxUploader {
             accepted += 1;
         }
         if accepted == 0 {
-            self.report_failure(&format!("Nothing to upload to {service}"), false);
+            self.report_failure(&native::tr("Nothing to upload to %1", &[&service]), false);
             return;
         }
         self.as_mut().rust_mut().owns_shared_progress = true;
         Self::with_progress(|mut p| {
             p.as_mut().set_running(true);
-            p.set_status_text(&format!("Preparing to upload to {service}..."));
+            p.set_status_text(&native::tr("Preparing to upload to %1...", &[&service]));
         });
         if !self.is_uploading {
             self.process_next();
@@ -293,7 +293,7 @@ impl CatboxUploader {
             p.as_mut().set_running(true);
             p.as_mut().set_progress(0.0);
             p.as_mut().set_current_item(&file_name);
-            p.set_status_text(&format!("Uploading {file_name} to {service}..."));
+            p.set_status_text(&native::tr("Uploading %1 to %2...", &[&file_name, &service]));
         });
 
         let (boundary, length, body) = match multipart_body(&item, &file_name) {
@@ -301,7 +301,7 @@ impl CatboxUploader {
             Err(_) => {
                 let err = "Failed to open file for reading";
                 self.as_mut().upload_finished(false, &qs(err), &qs(&item.file_path));
-                self.report_failure(&format!("{service} upload failed: {err}"), false);
+                self.report_failure(&native::tr("%1 upload failed: %2", &[&service, &err]), false);
                 return self.process_next();
             }
         };
@@ -362,16 +362,16 @@ impl CatboxUploader {
         let name = self.current_file_name.to_string();
         let service = self.current_service.to_string();
         let percent = (progress * 100.0) as i32;
-        self.as_mut().upload_progress_updated(progress, &qs(&format!("Uploading {name} ({percent}%)")));
+        self.as_mut().upload_progress_updated(progress, &qs(&native::tr("Uploading %1 (%2%)", &[&name, &percent.to_string()])));
         let queued = match self.queue.len() {
             0 => String::new(),
             1 => ", 1 more queued".to_string(),
-            n => format!(", {n} more queued"),
+            n => native::tr(", %1 more queued", &[&n.to_string()]),
         };
         let status = if progress >= 1.0 {
-            format!("Waiting for {service} to process {name}...{queued}")
+            native::tr("Waiting for %1 to process %2...%3", &[&service, &name, &queued])
         } else {
-            format!("Uploading {name} to {service} ({percent}%){queued}")
+            native::tr("Uploading %1 to %2 (%3%)%4", &[&name, &service, &percent.to_string(), &queued])
         };
         Self::with_progress(|mut p| {
             if *p.running() {
@@ -396,22 +396,22 @@ impl CatboxUploader {
                 native::ffi::clipboard_set_text(&qs(&text));
                 self.as_mut().upload_finished(true, &qs(&text), &file_path);
                 if let Some(mut ops) = registry::FILE_OPERATIONS.get() {
-                    ops.as_mut().push_completed_task(true, &format!("Uploaded {name} to {service}"), &text);
-                    ops.operation_finished(true, &qs(&format!("Uploaded {name} to {service}: {text}")));
+                    ops.as_mut().push_completed_task(true, &native::tr("Uploaded %1 to %2", &[&name, &service]), &text);
+                    ops.operation_finished(true, &qs(&native::tr("Uploaded %1 to %2: %3", &[&name, &service, &text])));
                 }
             }
             Ok((status, text)) if status == 200 || status == 201 => {
                 self.as_mut().upload_finished(false, &qs(&text), &file_path);
-                self.report_failure(&format!("{service} upload failed for {name}: {text}"), true);
+                self.report_failure(&native::tr("%1 upload failed for %2: %3", &[&service, &name, &text]), true);
             }
             Ok((status, text)) => {
                 let err = format!("HTTP {status} {text}").trim().to_string();
                 self.as_mut().upload_finished(false, &qs(&err), &file_path);
-                self.report_failure(&format!("{service} upload error for {name}: {err}"), true);
+                self.report_failure(&native::tr("%1 upload error for %2: %3", &[&service, &name, &err]), true);
             }
             Err(err) => {
                 self.as_mut().upload_finished(false, &qs(&err), &file_path);
-                self.report_failure(&format!("{service} upload error for {name}: {err}"), true);
+                self.report_failure(&native::tr("%1 upload error for %2: %3", &[&service, &name, &err]), true);
             }
         }
         self.process_next();

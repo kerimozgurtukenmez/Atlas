@@ -138,6 +138,11 @@ void setTtyTokens(bool tty, const QString& preferredMono) {
     atlas::config::TokensSingleton::instance()->setTty(tty, preferredMono);
 }
 
+QString translateText(const QString& text) {
+    const QByteArray utf8 = text.toUtf8();
+    return QCoreApplication::translate("rust", utf8.constData());
+}
+
 void setMochiTokens(bool mochi) {
     atlas::config::TokensSingleton::instance()->setMochi(mochi);
 }

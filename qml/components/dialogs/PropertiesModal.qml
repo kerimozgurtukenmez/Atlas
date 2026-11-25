@@ -548,7 +548,7 @@ MouseArea {
 
                                         StyledText {
                                             Layout.preferredWidth: 130
-                                            text: detailRow.modelData.label + ":"
+                                            text: qsTr(detailRow.modelData.label) + ":"
                                             font: Tokens.font.label.medium
                                             color: Colours.palette.m3onSurfaceVariant
                                             Layout.alignment: Qt.AlignVCenter
