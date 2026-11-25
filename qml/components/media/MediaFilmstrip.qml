@@ -26,7 +26,7 @@ StyledRect {
     Behavior on scale { Anim { type: Anim.FastSpatial } }
 
     radius: Tokens.rounding.medium
-    color: Qt.alpha(Colours.palette.m3surfaceContainerHighest, 0.85)
+    color: Colours.mochi ? "transparent" : Qt.alpha(Colours.palette.m3surfaceContainerHighest, 0.85)
 
     ListView {
         id: filmListView
@@ -47,13 +47,17 @@ StyledRect {
 
             implicitWidth: 64
             implicitHeight: 64
-            radius: Tokens.rounding.small
-            color: root.currentIndex === index ? Colours.palette.m3primary : (thumbHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : Colours.palette.m3surfaceContainer)
+            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.small
+            // MochiFile: secili kucuk resim pembe cerceve + murekkep halka, digerleri beyaz cerceve
+            color: Colours.mochi ? (root.currentIndex === index ? Colours.palette.m3primary : Colours.palette.m3surface) : (root.currentIndex === index ? Colours.palette.m3primary : (thumbHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : Colours.palette.m3surfaceContainer))
+            border.width: Colours.mochi && root.currentIndex === index ? Tokens.mochi.line : 0
+            border.color: Colours.palette.m3outline
+            opacity: Colours.mochi && root.currentIndex !== index && !thumbHover.containsMouse ? 0.75 : 1
 
             Rectangle {
                 anchors.fill: parent
-                anchors.margins: root.currentIndex === index ? 2 : 0
-                radius: Tokens.rounding.small
+                anchors.margins: Colours.mochi ? (root.currentIndex === index ? Tokens.mochi.line * 2 : Tokens.mochi.line) : (root.currentIndex === index ? 2 : 0)
+                radius: Colours.mochi ? Tokens.mochi.rowRadius - anchors.margins : Tokens.rounding.small
                 color: Colours.palette.m3surface
                 clip: true
 

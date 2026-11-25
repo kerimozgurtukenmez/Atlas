@@ -124,7 +124,8 @@ MouseArea {
     // Scrim / Backdrop Background
     Rectangle {
         anchors.fill: parent
-        color: Colours.palette.m3scrim
+        // MochiFile: mochi'de koyu murekkep zemin
+        color: Colours.mochi ? Qt.darker(Colours.palette.m3scrim, Tokens.mochi.viewerDarken) : Colours.palette.m3scrim
         opacity: 0.94
     }
 
@@ -162,10 +163,12 @@ MouseArea {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         anchors.leftMargin: Tokens.padding.medium
-        implicitWidth: 44
-        implicitHeight: 44
-        radius: Tokens.rounding.full
-        color: leftBtnHover.containsMouse ? Qt.alpha(Colours.palette.m3surfaceContainerHighest, 0.8) : Qt.alpha(Colours.palette.m3surfaceContainer, 0.4)
+        implicitWidth: Colours.mochi ? Tokens.mochi.viewerArrow : 44
+        implicitHeight: Colours.mochi ? Tokens.mochi.viewerArrow : 44
+        radius: height / 2
+        mochiKey: true
+        mochiDown: leftBtnHover.pressed
+        color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : leftBtnHover.containsMouse ? Qt.alpha(Colours.palette.m3surfaceContainerHighest, 0.8) : Qt.alpha(Colours.palette.m3surfaceContainer, 0.4)
         visible: root.mediaList.length > 1 && root.showControls
         opacity: root.showControls ? 1.0 : 0.0
         Behavior on opacity { Anim { type: Anim.FastEffects } }
@@ -190,10 +193,12 @@ MouseArea {
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         anchors.rightMargin: Tokens.padding.medium
-        implicitWidth: 44
-        implicitHeight: 44
-        radius: Tokens.rounding.full
-        color: rightBtnHover.containsMouse ? Qt.alpha(Colours.palette.m3surfaceContainerHighest, 0.8) : Qt.alpha(Colours.palette.m3surfaceContainer, 0.4)
+        implicitWidth: Colours.mochi ? Tokens.mochi.viewerArrow : 44
+        implicitHeight: Colours.mochi ? Tokens.mochi.viewerArrow : 44
+        radius: height / 2
+        mochiKey: true
+        mochiDown: rightBtnHover.pressed
+        color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : rightBtnHover.containsMouse ? Qt.alpha(Colours.palette.m3surfaceContainerHighest, 0.8) : Qt.alpha(Colours.palette.m3surfaceContainer, 0.4)
         visible: root.mediaList.length > 1 && root.showControls
         opacity: root.showControls ? 1.0 : 0.0
         Behavior on opacity { Anim { type: Anim.FastEffects } }
@@ -220,8 +225,8 @@ MouseArea {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        implicitHeight: 56
-        color: Qt.alpha(Colours.palette.m3surfaceContainerHighest, 0.75)
+        implicitHeight: Colours.mochi ? Tokens.mochi.navBarHeight : 56
+        color: Colours.mochi ? "transparent" : Qt.alpha(Colours.palette.m3surfaceContainerHighest, 0.75)
         opacity: root.showControls ? 1.0 : 0.0
         Behavior on opacity { Anim { type: Anim.FastEffects } }
 
@@ -232,10 +237,12 @@ MouseArea {
             spacing: Tokens.spacing.medium
 
             StyledRect {
-                implicitWidth: 36
-                implicitHeight: 36
-                radius: Tokens.rounding.full
-                color: closeHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent"
+                implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 36
+                implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 36
+                radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                mochiKey: true
+                mochiDown: closeHover.pressed
+                color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (closeHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent")
 
                 MaterialIcon {
                     anchors.centerIn: parent
@@ -259,17 +266,35 @@ MouseArea {
 
                 StyledText {
                     text: root.currentMediaItem ? root.currentMediaItem.name : FileUtils.baseName(root.currentFilePath)
-                    color: Colours.palette.m3onSurface
-                    font: Tokens.font.body.builders.medium.weight(Font.Bold).build()
+                    color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3onSurface
+                    font: Colours.mochi ? Tokens.font.title.medium : Tokens.font.body.builders.medium.weight(Font.Bold).build()
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
 
                 StyledText {
-                    text: `${root.currentIndex + 1} of ${root.mediaList.length}`
+                    text: qsTr("%1 of %2").arg(root.currentIndex + 1).arg(root.mediaList.length)
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.label.small
-                    visible: root.mediaList.length > 1
+                    visible: !Colours.mochi && root.mediaList.length > 1
+                }
+
+                // MochiFile: sayac cipi
+                StyledRect {
+                    visible: Colours.mochi && root.mediaList.length > 1
+                    implicitHeight: Tokens.mochi.chipHeight
+                    implicitWidth: counterText.implicitWidth + Tokens.padding.medium * 2
+                    radius: height / 2
+                    mochiLine: true
+                    color: Colours.palette.m3surface
+
+                    StyledText {
+                        id: counterText
+                        anchors.centerIn: parent
+                        text: (root.currentIndex + 1) + " / " + root.mediaList.length
+                        color: Colours.palette.m3onSurface
+                        font: Tokens.font.label.builders.medium.weight(Font.Black).build()
+                    }
                 }
             }
 
@@ -279,10 +304,12 @@ MouseArea {
                 spacing: Tokens.spacing.extraSmall
 
                 StyledRect {
-                    implicitWidth: 36
-                    implicitHeight: 36
-                    radius: Tokens.rounding.full
-                    color: zoomInHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent"
+                    implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 36
+                    implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 36
+                    radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                    mochiKey: true
+                    mochiDown: zoomInHover.pressed
+                    color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (zoomInHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent")
 
                     MaterialIcon {
                         anchors.centerIn: parent
@@ -300,10 +327,12 @@ MouseArea {
                 }
 
                 StyledRect {
-                    implicitWidth: 36
-                    implicitHeight: 36
-                    radius: Tokens.rounding.full
-                    color: zoomOutHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent"
+                    implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 36
+                    implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 36
+                    radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                    mochiKey: true
+                    mochiDown: zoomOutHover.pressed
+                    color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (zoomOutHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent")
 
                     MaterialIcon {
                         anchors.centerIn: parent
@@ -321,10 +350,12 @@ MouseArea {
                 }
 
                 StyledRect {
-                    implicitWidth: 36
-                    implicitHeight: 36
-                    radius: Tokens.rounding.full
-                    color: resetZoomHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent"
+                    implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 36
+                    implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 36
+                    radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                    mochiKey: true
+                    mochiDown: resetZoomHover.pressed
+                    color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (resetZoomHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent")
 
                     MaterialIcon {
                         anchors.centerIn: parent
@@ -342,10 +373,12 @@ MouseArea {
                 }
 
                 StyledRect {
-                    implicitWidth: 36
-                    implicitHeight: 36
-                    radius: Tokens.rounding.full
-                    color: rotateHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent"
+                    implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 36
+                    implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 36
+                    radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                    mochiKey: true
+                    mochiDown: rotateHover.pressed
+                    color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (rotateHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent")
 
                     MaterialIcon {
                         anchors.centerIn: parent
@@ -365,10 +398,12 @@ MouseArea {
 
             // Open In Default External App
             StyledRect {
-                implicitWidth: 36
-                implicitHeight: 36
-                radius: Tokens.rounding.full
-                color: extHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent"
+                implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 36
+                implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 36
+                radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                mochiKey: true
+                mochiDown: extHover.pressed
+                color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (extHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent")
 
                 MaterialIcon {
                     anchors.centerIn: parent
@@ -387,10 +422,12 @@ MouseArea {
 
             // Fullscreen Toggle
             StyledRect {
-                implicitWidth: 36
-                implicitHeight: 36
-                radius: Tokens.rounding.full
-                color: fsHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent"
+                implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 36
+                implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight : 36
+                radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                mochiKey: true
+                mochiDown: fsHover.pressed
+                color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (fsHover.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent")
 
                 MaterialIcon {
                     anchors.centerIn: parent
@@ -419,8 +456,10 @@ MouseArea {
         anchors.horizontalCenter: parent.horizontalCenter
         implicitWidth: root.isVideo ? Math.min(parent.width - 40, 560) : 48
         implicitHeight: 48
-        radius: Tokens.rounding.full
-        color: Qt.alpha(Colours.palette.m3surfaceContainerHighest, 0.85)
+        radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+        mochiFrame: true
+        mochiShadow: Tokens.mochi.keyShadow
+        color: Colours.mochi ? Colours.palette.m3surface : Qt.alpha(Colours.palette.m3surfaceContainerHighest, 0.85)
         visible: (root.isVideo || root.mediaList.length > 1)
         opacity: root.showControls ? 1.0 : 0.0
         Behavior on opacity { Anim { type: Anim.FastEffects } }
