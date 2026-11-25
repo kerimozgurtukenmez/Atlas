@@ -146,6 +146,7 @@ ApplicationWindow {
                         }
 
                         previewOpen: previewPanel.expanded
+                        searchResultCount: splitContainer.activeModel ? splitContainer.activeModel.count : 0
                         onTogglePreview: {
                             previewPanel.expanded = !previewPanel.expanded;
                         }

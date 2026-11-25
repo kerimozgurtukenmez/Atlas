@@ -41,8 +41,9 @@ MouseArea {
                 implicitWidth: menuCol.implicitWidth + (Colours.tty ? 0 : Tokens.padding.extraSmall * 2)
                 implicitHeight: menuCol.implicitHeight + (Colours.tty ? 26 : Tokens.padding.extraSmall * 2)
 
-                radius: Tokens.rounding.large
-                color: Colours.palette.m3surfaceContainerLow
+                radius: Colours.mochi ? Tokens.mochi.cardRadius - Tokens.padding.extraSmall : Tokens.rounding.large
+                mochiFrame: true
+                color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerLow
 
                 scale: root.expanded ? 1.0 : 0.94
                 Behavior on scale { Anim { type: Anim.FastEffects; easing: Tokens.anim.standard } }
@@ -71,8 +72,8 @@ MouseArea {
                         Layout.fillWidth: true
                         implicitWidth: mi1Row.implicitWidth + 24
                         implicitHeight: Colours.tty ? 26 : 36
-                        radius: Tokens.rounding.medium
-                        color: !Colours.tty && (mi1Hover.containsMouse) ? Colours.tPalette.m3surfaceContainerHigh : "transparent"
+                        radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.medium
+                        color: !Colours.tty && (mi1Hover.containsMouse) ? (Colours.mochi ? Colours.palette.m3primaryContainer : Colours.tPalette.m3surfaceContainerHigh) : "transparent"
 
                         TtyMenuRow {
                             anchors.fill: parent
@@ -89,8 +90,8 @@ MouseArea {
                             anchors.leftMargin: 12
                             anchors.rightMargin: 12
                             spacing: 8
-                            MaterialIcon { text: "splitscreen"; fontStyle: Tokens.font.icon.small; color: Colours.palette.m3onSurfaceVariant }
-                            StyledText { text: qsTr("Split Tab Side-by-Side"); font: Tokens.font.body.medium; color: Colours.palette.m3onSurface }
+                            MaterialIcon { text: "splitscreen"; fontStyle: Tokens.font.icon.small; fill: Colours.mochi ? 1 : 0; color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant }
+                            StyledText { text: qsTr("Split Tab Side-by-Side"); font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.medium; color: Colours.palette.m3onSurface }
                         }
 
                         MouseArea {
@@ -110,8 +111,8 @@ MouseArea {
                         Layout.fillWidth: true
                         implicitWidth: mi2Row.implicitWidth + 24
                         implicitHeight: Colours.tty ? 26 : 36
-                        radius: Tokens.rounding.medium
-                        color: !Colours.tty && (mi2Hover.containsMouse) ? Colours.tPalette.m3surfaceContainerHigh : "transparent"
+                        radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.medium
+                        color: !Colours.tty && (mi2Hover.containsMouse) ? (Colours.mochi ? Colours.palette.m3primaryContainer : Colours.tPalette.m3surfaceContainerHigh) : "transparent"
 
                         TtyMenuRow {
                             anchors.fill: parent
@@ -127,8 +128,8 @@ MouseArea {
                             anchors.leftMargin: 12
                             anchors.rightMargin: 12
                             spacing: 8
-                            MaterialIcon { text: "content_copy"; fontStyle: Tokens.font.icon.small; color: Colours.palette.m3onSurfaceVariant }
-                            StyledText { text: qsTr("Duplicate Tab"); font: Tokens.font.body.medium; color: Colours.palette.m3onSurface }
+                            MaterialIcon { text: "content_copy"; fontStyle: Tokens.font.icon.small; fill: Colours.mochi ? 1 : 0; color: Colours.mochi ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant }
+                            StyledText { text: qsTr("Duplicate Tab"); font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.medium; color: Colours.palette.m3onSurface }
                         }
 
                         MouseArea {
@@ -148,8 +149,8 @@ MouseArea {
                         Layout.fillWidth: true
                         implicitWidth: mi3Row.implicitWidth + 24
                         implicitHeight: Colours.tty ? 26 : 36
-                        radius: Tokens.rounding.medium
-                        color: !Colours.tty && (mi3Hover.containsMouse) ? Colours.tPalette.m3surfaceContainerHigh : "transparent"
+                        radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.medium
+                        color: !Colours.tty && (mi3Hover.containsMouse) ? (Colours.mochi ? Colours.palette.m3primaryContainer : Colours.tPalette.m3surfaceContainerHigh) : "transparent"
                         visible: TabManager.count > 1
 
                         TtyMenuRow {
@@ -169,7 +170,7 @@ MouseArea {
                             anchors.rightMargin: 12
                             spacing: 8
                             MaterialIcon { text: "close"; fontStyle: Tokens.font.icon.small; color: Colours.palette.m3error }
-                            StyledText { text: qsTr("Close Tab"); font: Tokens.font.body.medium; color: Colours.palette.m3error }
+                            StyledText { text: qsTr("Close Tab"); font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.medium; color: Colours.palette.m3error }
                         }
 
                         MouseArea {

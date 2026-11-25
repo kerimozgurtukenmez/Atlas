@@ -94,6 +94,8 @@ StyledRect {
     signal togglePreview()
     // MochiFile: onizleme tusu basili gorunsun diye
     property bool previewOpen: false
+    // MochiFile: arama sonucu sayisi (main.qml etkin modelden baglar)
+    property int searchResultCount: 0
     signal toggleTerminal()
     signal createNewFolder()
     signal createNewFile()
@@ -811,6 +813,31 @@ StyledRect {
                         root.isSearching = false;
                         root.focusResultsView();
                         event.accepted = true;
+                    }
+                }
+
+                // MochiFile: arama kapsami ve sonuc sayisi cipleri (tasarimdaki gibi)
+                Repeater {
+                    model: Colours.mochi && root.searchText.length > 0
+                        ? [qsTr("this folder + subfolders"), qsTr("%1 results").arg(root.searchResultCount)]
+                        : []
+
+                    StyledRect {
+                        required property string modelData
+                        required property int index
+                        implicitHeight: Tokens.mochi.chipHeight
+                        implicitWidth: chipLabel.implicitWidth + Tokens.padding.medium * 2
+                        radius: height / 2
+                        mochiLine: true
+                        color: index === 1 ? Colours.palette.m3primaryContainer : Colours.palette.m3surface
+
+                        StyledText {
+                            id: chipLabel
+                            anchors.centerIn: parent
+                            text: parent.modelData
+                            color: Colours.palette.m3onSurface
+                            font: Tokens.font.label.builders.small.weight(Font.Black).build()
+                        }
                     }
                 }
 
