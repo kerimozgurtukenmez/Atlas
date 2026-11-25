@@ -128,7 +128,7 @@ MouseArea {
                         }
 
                         StyledText {
-                            text: (Colours.mochi ? "サーバー - " : "") + (qsTr("Connect to Server"))
+                            text: (Colours.mochi ? "つなぐ - " : "") + (qsTr("Connect to Server"))
                             font: Tokens.font.title.medium
                             color: Colours.palette.m3onSurface
                             Layout.fillWidth: true
@@ -185,8 +185,52 @@ MouseArea {
                             width: flickable.width
                             spacing: Tokens.spacing.medium
 
+                            // MochiFile: mochi'de protokol cip sirasi (tasarimdaki gibi)
+                            Flow {
+                                Layout.fillWidth: true
+                                visible: Colours.mochi
+                                spacing: Tokens.spacing.small
+
+                                Repeater {
+                                    model: root.protocolMenuItems
+
+                                    StyledRect {
+                                        id: protoChip
+
+                                        required property var modelData
+                                        readonly property bool current: root.scheme === modelData.scheme
+
+                                        implicitHeight: Tokens.mochi.chipHeight + Tokens.spacing.small
+                                        implicitWidth: protoText.implicitWidth + Tokens.padding.medium * 2
+                                        radius: height / 2
+                                        mochiLine: true
+                                        mochiShadow: current ? Tokens.mochi.smallShadow - 1 : 0
+                                        color: current ? Colours.palette.m3primary : Colours.palette.m3surface
+
+                                        StyledText {
+                                            id: protoText
+                                            anchors.centerIn: parent
+                                            // "SFTP (SSH ...)" -> "SFTP"
+                                            text: protoChip.modelData.text.split(" (")[0]
+                                            color: protoChip.current ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
+                                            font: Tokens.font.label.builders.medium.weight(Font.Black).build()
+                                        }
+
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                root.scheme = protoChip.modelData.scheme;
+                                                portInput.text = String(NetworkManager.defaultPort(root.scheme));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             // Protocol Selection as SplitButtonRow
                             SplitButtonRow {
+                                visible: !Colours.mochi
                                 Layout.fillWidth: true
                                 first: true
                                 last: true
@@ -448,8 +492,11 @@ MouseArea {
                         StyledRect {
                             implicitWidth: connectRow.implicitWidth + Tokens.padding.medium * 2
                             implicitHeight: 38
-                            radius: Tokens.rounding.full
-                            color: hostInput.text.trim().length > 0 ? Colours.palette.m3primary : Qt.alpha(Colours.palette.m3primary, 0.4)
+                            radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                            mochiKey: true
+                            mochiDown: connectArea.pressed
+                            opacity: Colours.mochi && hostInput.text.trim().length === 0 ? 0.45 : 1
+                            color: Colours.mochi ? Colours.palette.m3primary : (hostInput.text.trim().length > 0 ? Colours.palette.m3primary : Qt.alpha(Colours.palette.m3primary, 0.4))
 
                             RowLayout {
                                 id: connectRow
@@ -472,6 +519,7 @@ MouseArea {
                             }
 
                             MouseArea {
+                                id: connectArea
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: hostInput.text.trim().length > 0 && !NetworkManager.isConnecting ? Qt.PointingHandCursor : undefined

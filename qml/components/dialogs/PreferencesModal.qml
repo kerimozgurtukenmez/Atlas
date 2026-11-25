@@ -92,6 +92,14 @@ MouseArea {
         }
     ]
     // Index = Colours.style: follow KiiteShell, Material 3, TTY
+    readonly property var categoryModel: [
+        { tab: 0, label: qsTr("General"), icon: "tune" },
+        { tab: 1, label: qsTr("View & Sorting"), icon: "grid_view" },
+        { tab: 2, label: qsTr("Context Menu"), icon: "menu" },
+        { tab: 3, label: qsTr("Scripts & Tools"), icon: "terminal" },
+        { tab: 4, label: qsTr("Shortcuts"), icon: "keyboard" }
+    ]
+
     readonly property list<MenuItem> styleItems: [
         MenuItem {
             text: qsTr("Follow KiiteShell")
@@ -192,7 +200,7 @@ MouseArea {
                 id: modalCard
 
                 anchors.centerIn: parent
-                width: Math.min(parent.width - 64, 760)
+                width: Math.min(parent.width - 64, Colours.mochi ? Tokens.mochi.prefsWidth : 760)
                 height: Math.min(parent.height - 64, 660)
                 implicitWidth: 760
                 implicitHeight: 660
@@ -247,20 +255,86 @@ MouseArea {
 
                     // Category Navigation Tabs
                     SlidingSelector {
+                        visible: !Colours.mochi
                         Layout.fillWidth: true
                         inactiveColor: Colours.tPalette.m3surfaceContainerHighest
-                        model: [
-                            { tab: 0, label: qsTr("General"), icon: "tune" },
-                            { tab: 1, label: qsTr("View & Sorting"), icon: "grid_view" },
-                            { tab: 2, label: qsTr("Context Menu"), icon: "menu" },
-                            { tab: 3, label: qsTr("Scripts & Tools"), icon: "terminal" },
-                            { tab: 4, label: qsTr("Shortcuts"), icon: "keyboard" }
-                        ]
+                        model: root.categoryModel
                         valueKey: "tab"
                         currentValue: root.currentCategory
                         onSelected: val => {
                             root.currentCategory = val;
                             if (val !== 4) shortcutsTab.abortRecorder();
+                        }
+                    }
+
+                    // MochiFile: mochi'de kategoriler solda dikey liste (tasarimdaki gibi)
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        spacing: Colours.mochi ? Tokens.spacing.large : 0
+
+                    StyledRect {
+                        visible: Colours.mochi
+                        Layout.fillHeight: true
+                        Layout.preferredWidth: Tokens.mochi.prefsNavWidth
+                        radius: Tokens.mochi.itemRadius
+                        color: Colours.palette.m3surfaceContainerLow
+
+                        Column {
+                            anchors.fill: parent
+                            anchors.margins: Tokens.padding.small
+                            spacing: Tokens.spacing.extraSmall
+
+                            Repeater {
+                                model: root.categoryModel
+
+                                StyledRect {
+                                    id: navRow
+
+                                    required property var modelData
+                                    readonly property bool current: root.currentCategory === modelData.tab
+
+                                    width: parent.width
+                                    height: Tokens.mochi.navRowHeight
+                                    radius: Tokens.mochi.rowRadius
+                                    mochiLine: current
+                                    mochiShadow: current ? Tokens.mochi.smallShadow : 0
+                                    color: current ? Colours.palette.m3primary : (navArea.containsMouse ? Colours.palette.m3surfaceContainerHigh : "transparent")
+
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: Tokens.padding.medium
+                                        anchors.rightMargin: Tokens.padding.small
+                                        spacing: Tokens.spacing.small
+
+                                        MaterialIcon {
+                                            text: navRow.modelData.icon
+                                            fill: 1
+                                            color: navRow.current ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
+                                            fontStyle: Tokens.font.icon.small
+                                        }
+
+                                        StyledText {
+                                            Layout.fillWidth: true
+                                            text: navRow.modelData.label
+                                            color: navRow.current ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
+                                            font: Tokens.font.body.builders.small.weight(Font.Black).build()
+                                            elide: Text.ElideRight
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        id: navArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            root.currentCategory = navRow.modelData.tab;
+                                            if (navRow.modelData.tab !== 4) shortcutsTab.abortRecorder();
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -1252,6 +1326,7 @@ MouseArea {
                                 height: contentArea.height
                             }
                         }
+                    }
                     }
 
                     StyledRect {

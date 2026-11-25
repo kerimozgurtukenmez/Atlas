@@ -354,6 +354,10 @@ class MochiTokens : public QObject {
     Q_PROPERTY(int stripeGap MEMBER m_stripeGap CONSTANT)
     Q_PROPERTY(int knobSize MEMBER m_knobSize CONSTANT)
     Q_PROPERTY(int zoomWidth MEMBER m_zoomWidth CONSTANT)
+    Q_PROPERTY(int deleteListMax MEMBER m_deleteListMax CONSTANT)
+    Q_PROPERTY(int prefsNavWidth MEMBER m_prefsNavWidth CONSTANT)
+    Q_PROPERTY(int prefsWidth MEMBER m_prefsWidth CONSTANT)
+    Q_PROPERTY(int navRowHeight MEMBER m_navRowHeight CONSTANT)
 
 public:
     explicit MochiTokens(QObject* parent = nullptr) : QObject(parent) {}
@@ -397,6 +401,10 @@ private:
     int m_stripeGap = 6;
     int m_knobSize = 18;
     int m_zoomWidth = 110;
+    int m_deleteListMax = 5;
+    int m_prefsNavWidth = 220;
+    int m_prefsWidth = 980;
+    int m_navRowHeight = 44;
 };
 
 class TokensSingleton : public QObject {

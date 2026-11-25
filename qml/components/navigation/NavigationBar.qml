@@ -632,16 +632,43 @@ StyledRect {
                 y: parent.height + 4
                 anchors.left: parent.left
                 width: Math.max(parent.width, 360)
-                implicitHeight: Math.min(suggestionsList.contentHeight + Tokens.padding.extraSmall * 2, 240)
-                radius: Tokens.rounding.large
-                color: Colours.palette.m3surfaceContainerLow
-                border.color: Colours.palette.m3outlineVariant
-                border.width: 1
+                implicitHeight: Math.min(suggestionsList.contentHeight + Tokens.padding.extraSmall * 2, 240) + (Colours.mochi ? addressHeader.height + Tokens.padding.medium + Tokens.padding.small * 2 : 0)
+                radius: Colours.mochi ? Tokens.mochi.itemRadius : Tokens.rounding.large
+                color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerLow
+                border.color: Colours.mochi ? Colours.palette.m3outline : Colours.palette.m3outlineVariant
+                border.width: Colours.mochi ? Tokens.mochi.line : 1
+                mochiFrame: true
+
+                // MochiFile: "アドレス - Adres" basligi ve kisayol ipucu
+                RowLayout {
+                    id: addressHeader
+                    visible: Colours.mochi
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: Tokens.padding.medium
+                    height: Colours.mochi ? implicitHeight : 0
+                    spacing: Tokens.spacing.small
+
+                    MochiTitle {
+                        jp: "アドレス"
+                        title: qsTr("Address")
+                    }
+
+                    StyledText {
+                        Layout.fillWidth: true
+                        text: qsTr("address mode · Ctrl+L / Alt+D")
+                        color: Colours.palette.m3onSurfaceVariant
+                        font: Tokens.font.label.builders.small.weight(Font.Black).build()
+                        elide: Text.ElideRight
+                    }
+                }
 
                 ListView {
                     id: suggestionsList
                     anchors.fill: parent
-                    anchors.margins: Tokens.padding.extraSmall
+                    anchors.margins: Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall
+                    anchors.topMargin: Colours.mochi ? addressHeader.height + Tokens.padding.medium + Tokens.padding.small : Tokens.padding.extraSmall
                     clip: true
                     model: root.pathSuggestions
                     spacing: 2
@@ -657,8 +684,8 @@ StyledRect {
 
                         width: suggestionsList.width
                         implicitHeight: 32
-                        radius: Tokens.rounding.small
-                        color: (root.selectedSuggestionIndex === index || suggHover.containsMouse) ? Colours.tPalette.m3surfaceContainerHigh : Qt.alpha(Colours.tPalette.m3surfaceContainerHigh, 0)
+                        radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.small
+                        color: (root.selectedSuggestionIndex === index || suggHover.containsMouse) ? (Colours.mochi ? Colours.palette.m3primaryContainer : Colours.tPalette.m3surfaceContainerHigh) : Qt.alpha(Colours.tPalette.m3surfaceContainerHigh, 0)
 
                         RowLayout {
                             anchors.fill: parent

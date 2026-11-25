@@ -16,6 +16,8 @@ MouseArea {
     property var sharingServices: []
     property var customActions: []
     property var activeSubmenuItems: []
+    // MochiFile: acik alt menunun basligi (alt menunun ustunde kucuk etiket)
+    property string activeSubmenuTitle: ""
     property var displaySubmenuItems: []
     property bool shiftHeld: false
 
@@ -490,6 +492,7 @@ MouseArea {
                 onContainsMouseChanged: {
                     if (modelData.hasSubmenu) {
                         if (containsMouse) {
+                            root.activeSubmenuTitle = modelData.text || "";
                             root.activeSubmenuItems = modelData.submenuItems || [];
                             let pos = menuItem.mapToItem(root, 0, 0);
                             root.submenuY = pos.y;
@@ -502,6 +505,7 @@ MouseArea {
                 }
                 onClicked: {
                     if (modelData.hasSubmenu) {
+                        root.activeSubmenuTitle = modelData.text || "";
                         root.activeSubmenuItems = modelData.submenuItems || [];
                         let pos = menuItem.mapToItem(root, 0, 0);
                         root.submenuY = pos.y;
@@ -691,6 +695,14 @@ MouseArea {
             anchors.topMargin: Colours.tty ? 6 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall)
             anchors.bottomMargin: Colours.tty ? 6 : (Colours.mochi ? Tokens.padding.small : Tokens.padding.extraSmall)
             spacing: 0
+
+            MochiSection {
+                visible: Colours.mochi && root.activeSubmenuTitle.length > 0
+                Layout.leftMargin: Tokens.padding.small
+                Layout.bottomMargin: Tokens.spacing.extraSmall
+                title: root.activeSubmenuTitle
+                color: Colours.palette.m3onSurfaceVariant
+            }
 
             Repeater {
                 model: root.displaySubmenuItems

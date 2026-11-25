@@ -85,6 +85,32 @@ MouseArea {
                     onWheel: wheel => wheel.accepted = true
                 }
 
+                // MochiFile: kartin ustunde sekme gibi duran baslik (tasarimdaki プロパティ)
+                StyledRect {
+                    visible: Colours.mochi
+                    z: -1
+                    x: Tokens.mochi.cardRadius
+                    y: -height + Tokens.mochi.line
+                    implicitWidth: propTabTitle.implicitWidth + Tokens.padding.large * 2
+                    implicitHeight: propTabTitle.implicitHeight + Tokens.padding.small * 2 + Tokens.mochi.line
+                    topLeftRadius: Tokens.mochi.keyRadius
+                    topRightRadius: Tokens.mochi.keyRadius
+                    bottomLeftRadius: 0
+                    bottomRightRadius: 0
+                    color: Colours.palette.m3secondary
+                    mochiLine: true
+                    mochiBorder: Tokens.mochi.line
+
+                    MochiTitle {
+                        id: propTabTitle
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: parent.top
+                        anchors.topMargin: Tokens.padding.small
+                        jp: "プロパティ"
+                        title: qsTr("Properties")
+                    }
+                }
+
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.margins: Tokens.padding.large

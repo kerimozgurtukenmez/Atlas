@@ -130,6 +130,56 @@ MouseArea {
                         wrapMode: Text.Wrap
                     }
 
+                    // MochiFile: kalici silmede uyari satiri + silinecek dosyalarin listesi
+                    StyledText {
+                        Layout.fillWidth: true
+                        visible: Colours.mochi && root.permanent
+                        text: qsTr("Permanently deleted files skip the trash and cannot be restored.")
+                        color: Colours.palette.m3onSurfaceVariant
+                        font: Tokens.font.label.builders.medium.weight(Font.Black).build()
+                        wrapMode: Text.Wrap
+                    }
+
+                    StyledRect {
+                        Layout.fillWidth: true
+                        visible: Colours.mochi && root.targetPaths.length > 0
+                        implicitHeight: deleteList.implicitHeight + Tokens.padding.medium * 2
+                        radius: Tokens.mochi.rowRadius
+                        color: Qt.alpha(Colours.palette.m3errorContainer, 0.45)
+                        mochiLine: true
+                        mochiBorderColour: Colours.palette.m3errorContainer
+
+                        Column {
+                            id: deleteList
+
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: Tokens.padding.medium
+                            spacing: Tokens.spacing.extraSmall
+
+                            Repeater {
+                                model: root.targetPaths.slice(0, Tokens.mochi.deleteListMax)
+
+                                StyledText {
+                                    required property string modelData
+                                    width: deleteList.width
+                                    text: modelData.split("/").pop()
+                                    color: Colours.palette.m3onSurface
+                                    font: Tokens.font.mono.small
+                                    elide: Text.ElideMiddle
+                                }
+                            }
+
+                            StyledText {
+                                visible: root.targetPaths.length > Tokens.mochi.deleteListMax
+                                text: qsTr("and %1 more").arg(root.targetPaths.length - Tokens.mochi.deleteListMax)
+                                color: Colours.palette.m3onSurfaceVariant
+                                font: Tokens.font.label.small
+                            }
+                        }
+                    }
+
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: Tokens.spacing.small

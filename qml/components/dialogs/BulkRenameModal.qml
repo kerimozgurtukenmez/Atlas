@@ -1231,8 +1231,9 @@ MouseArea {
                         StyledText {
                             Layout.preferredWidth: 1
                             Layout.fillWidth: true
-                            text: qsTr("Original Name")
-                            font: Tokens.font.label.medium
+                            // MochiFile: tasarimda "SIMDI / SONRA", buyuk harf, soluk
+                            text: Colours.mochi ? qsTr("Now").toLocaleUpperCase(Qt.locale().name) : qsTr("Original Name")
+                            font: Colours.mochi ? Tokens.font.label.builders.small.weight(Font.Black).letterSpacing(Tokens.mochi.sectionSpacing).build() : Tokens.font.label.medium
                             color: Colours.palette.m3onSurfaceVariant
                         }
 
@@ -1241,8 +1242,9 @@ MouseArea {
                         StyledText {
                             Layout.preferredWidth: 1
                             Layout.fillWidth: true
-                            text: qsTr("New Name")
-                            font: Tokens.font.label.medium
+                            // MochiFile: tasarimda "SIMDI / SONRA", buyuk harf, soluk
+                            text: Colours.mochi ? qsTr("After").toLocaleUpperCase(Qt.locale().name) : qsTr("New Name")
+                            font: Colours.mochi ? Tokens.font.label.builders.small.weight(Font.Black).letterSpacing(Tokens.mochi.sectionSpacing).build() : Tokens.font.label.medium
                             color: Colours.palette.m3onSurfaceVariant
                         }
 
@@ -1358,7 +1360,7 @@ MouseArea {
                                             verticalAlignment: Text.AlignVCenter
                                             text: rowRect.fromName
                                             color: Colours.palette.m3onSurfaceVariant
-                                            font: Tokens.font.body.small
+                                            font: Colours.mochi ? Tokens.font.mono.small : Tokens.font.body.small
                                             elide: Text.ElideMiddle
                                         }
                                     }
@@ -1398,7 +1400,8 @@ MouseArea {
                                             color: rowRect.problemText.length > 0
                                                 ? Colours.palette.m3onErrorContainer
                                                 : (rowRect.isChanged ? Colours.palette.m3onPrimaryContainer : Colours.palette.m3onSurfaceVariant)
-                                            font: rowRect.isChanged ? Tokens.font.body.builders.small.weight(Font.Bold).build() : Tokens.font.body.small
+                                            // MochiFile: tasarimda dosya adlari mono yazi
+                                            font: Colours.mochi ? (rowRect.isChanged ? Tokens.font.mono.builders.small.weight(Font.Bold).build() : Tokens.font.mono.small) : (rowRect.isChanged ? Tokens.font.body.builders.small.weight(Font.Bold).build() : Tokens.font.body.small)
                                             elide: Text.ElideMiddle
 
                                             Behavior on color {

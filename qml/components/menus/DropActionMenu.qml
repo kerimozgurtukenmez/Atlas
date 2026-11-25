@@ -77,11 +77,12 @@ MouseArea {
                 x: Math.min(Math.max(8, root.menuX), root.width - width - 8)
                 y: Math.min(Math.max(8, root.menuY), root.height - height - 8)
 
-                implicitWidth: menuCol.implicitWidth + (Colours.tty ? 0 : Tokens.padding.extraSmall * 2)
-                implicitHeight: menuCol.implicitHeight + (Colours.tty ? 26 : Tokens.padding.extraSmall * 2)
+                implicitWidth: menuCol.implicitWidth + (Colours.tty ? 0 : (Colours.mochi ? Tokens.padding.medium : Tokens.padding.extraSmall) * 2)
+                implicitHeight: menuCol.implicitHeight + (Colours.tty ? 26 : (Colours.mochi ? Tokens.padding.medium : Tokens.padding.extraSmall) * 2)
 
-                radius: Tokens.rounding.large
-                color: Colours.palette.m3surfaceContainerLow
+                radius: Colours.mochi ? Tokens.mochi.cardRadius - Tokens.padding.extraSmall : Tokens.rounding.large
+                color: Colours.mochi ? Colours.palette.m3surface : Colours.palette.m3surfaceContainerLow
+                mochiFrame: true
 
                 scale: root.expanded ? 1.0 : 0.94
                 Behavior on scale {
@@ -106,10 +107,31 @@ MouseArea {
                     id: menuCol
 
                     anchors.fill: parent
-                    anchors.margins: Colours.tty ? 0 : Tokens.padding.extraSmall
-                    anchors.topMargin: Colours.tty ? 18 : Tokens.padding.extraSmall
-                    anchors.bottomMargin: Colours.tty ? 8 : Tokens.padding.extraSmall
+                    anchors.margins: Colours.tty ? 0 : (Colours.mochi ? Tokens.padding.medium : Tokens.padding.extraSmall)
+                    anchors.topMargin: Colours.tty ? 18 : (Colours.mochi ? Tokens.padding.medium : Tokens.padding.extraSmall)
+                    anchors.bottomMargin: Colours.tty ? 8 : (Colours.mochi ? Tokens.padding.medium : Tokens.padding.extraSmall)
                     spacing: 2
+
+                    // MochiFile: baslik "どうする？ - Ne yapalım?" + kac oge, nereye
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.bottomMargin: Tokens.spacing.small
+                        visible: Colours.mochi
+                        spacing: Tokens.spacing.small
+
+                        MochiTitle {
+                            jp: "どうする？"
+                            title: qsTr("What now?")
+                        }
+
+                        StyledText {
+                            Layout.fillWidth: true
+                            text: qsTr("%1 items → %2").arg(root.sourceFiles.length).arg(FileUtils.baseName(root.targetDir) + "/")
+                            color: Colours.palette.m3onSurfaceVariant
+                            font: Tokens.font.label.builders.small.weight(Font.Black).build()
+                            elide: Text.ElideMiddle
+                        }
+                    }
 
                     Repeater {
                         model: [
@@ -130,8 +152,8 @@ MouseArea {
                             implicitHeight: Colours.tty ? 26 : 36
                             Layout.fillWidth: true
 
-                            radius: Tokens.rounding.small
-                            color: !Colours.tty && (itemHover.containsMouse) ? Colours.tPalette.m3surfaceContainerHigh : "transparent"
+                            radius: Colours.mochi ? Tokens.mochi.rowRadius : Tokens.rounding.small
+                            color: !Colours.tty && (itemHover.containsMouse) ? (Colours.mochi ? Colours.palette.m3primaryContainer : Colours.tPalette.m3surfaceContainerHigh) : "transparent"
 
                             TtyMenuRow {
                                 anchors.fill: parent
@@ -151,19 +173,25 @@ MouseArea {
 
                                 MaterialIcon {
                                     text: menuItem.modelData.icon || ""
-                                    color: itemHover.containsMouse ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
+                                    fill: Colours.mochi ? 1 : 0
+                                    color: Colours.mochi ? Colours.palette.m3onSurface : (itemHover.containsMouse ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant)
                                     fontStyle: Tokens.font.icon.small
                                 }
 
                                 StyledText {
                                     text: menuItem.modelData.text || ""
                                     color: Colours.palette.m3onSurface
-                                    font: Tokens.font.body.small
+                                    font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.small
                                     Layout.fillWidth: true
                                 }
 
+                                MochiShortcutChip {
+                                    visible: Colours.mochi && text.length > 0
+                                    text: menuItem.modelData.shortcut || ""
+                                }
+
                                 StyledText {
-                                    visible: menuItem.modelData.shortcut ? true : false
+                                    visible: !Colours.mochi && (menuItem.modelData.shortcut ? true : false)
                                     text: menuItem.modelData.shortcut || ""
                                     color: Colours.palette.m3outline
                                     font: Tokens.font.label.small

@@ -298,7 +298,7 @@ StyledRect {
             // Key-Value Metadata List
             Repeater {
                 model: [
-                    { label: qsTr("Size"), value: meta.isDir ? `${meta.itemCount} items` : meta.formattedSize },
+                    { label: qsTr("Size"), value: meta.isDir ? qsTr("%1 items").arg(meta.itemCount) : meta.formattedSize },
                     { label: qsTr("Type"), value: meta.mimeDescription.length > 0 ? meta.mimeDescription : (meta.isDir ? "Folder" : "File") },
                     { label: qsTr("Dimensions"), value: meta.imageDimensions, visible: meta.isImage && meta.imageDimensions.length > 0 },
                     { label: qsTr("Resolution"), value: meta.videoDimensions, visible: meta.isVideo && meta.videoDimensions.length > 0 },
@@ -391,10 +391,11 @@ StyledRect {
 
         Repeater {
             model: [
+                // kisa etiketler: dar tusa sigsin (tasarimdaki ac / duzenle / ozellik)
                 { action: "open", icon: "open_in_new", label: qsTr("Open") },
-                { action: "openWith", icon: "apps", label: qsTr("Open with") },
-                { action: "rename", icon: "edit", label: qsTr("Rename") },
-                { action: "properties", icon: "info", label: qsTr("Properties") }
+                { action: "openWith", icon: "apps", label: qsTr("App") },
+                { action: "rename", icon: "edit", label: qsTr("Edit") },
+                { action: "properties", icon: "info", label: qsTr("Info") }
             ]
 
             MochiKeyButton {
