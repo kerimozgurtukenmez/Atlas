@@ -27,6 +27,11 @@ pub fn config_home() -> String {
     xdg_base("XDG_CONFIG_HOME", ".config")
 }
 
+/// `QStandardPaths::GenericStateLocation` (MochiFile: Cindy-Dots durum dosyasi burada).
+pub fn state_home() -> String {
+    xdg_base("XDG_STATE_HOME", ".local/state")
+}
+
 /// `QStandardPaths::GenericCacheLocation` (MochiFile: Cindy-Dots semasi burada).
 pub fn cache_home() -> String {
     xdg_base("XDG_CACHE_HOME", ".cache")

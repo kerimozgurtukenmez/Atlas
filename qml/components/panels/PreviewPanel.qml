@@ -354,7 +354,7 @@ StyledRect {
 
                     StyledText {
                         Layout.fillWidth: true
-                        text: wallCard.rev >= 0 && Colours.mochiSetting("wallpaper") === meta.path ? qsTr("Current wallpaper") : qsTr("Use this image as the Cindy-Dots wallpaper")
+                        text: wallCard.rev >= 0 && Colours.mochiState("wallpaper") === meta.path ? qsTr("Current wallpaper") : qsTr("Use this image as the Cindy-Dots wallpaper")
                         color: Colours.palette.m3onSurfaceVariant
                         font: Tokens.font.label.builders.small.weight(Font.Black).build()
                         wrapMode: Text.Wrap

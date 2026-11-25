@@ -186,6 +186,11 @@ pub mod qobject {
         #[qinvokable]
         #[cxx_name = "mochiSetting"]
         fn mochi_setting(self: &Colours, key: &QString) -> QString;
+        /// MochiFile: Cindy-Dots durum dosyasindan (~/.local/state/cindy-dots/state.json)
+        /// metin bir alan; yoksa bos. Or. gecerli duvar kagidi ("wallpaper").
+        #[qinvokable]
+        #[cxx_name = "mochiState"]
+        fn mochi_state(self: &Colours, key: &QString) -> QString;
         /// MochiFile: resmi Cindy-Dots duvar kagidi yapar (`qs ipc call wallpaper set`).
         /// Shell calismiyorsa false.
         #[qinvokable]
@@ -683,13 +688,11 @@ impl Colours {
     }
 
     fn mochi_setting(&self, key: &QString) -> QString {
-        let file = format!("{}/cindy-dots/settings.json", paths::config_home());
-        let value = std::fs::read_to_string(file)
-            .ok()
-            .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
-            .and_then(|json| json.get(key.to_string()).and_then(|v| v.as_str()).map(str::to_string))
-            .unwrap_or_default();
-        qs(&value)
+        mochi_json_string(&format!("{}/cindy-dots/settings.json", paths::config_home()), key)
+    }
+
+    fn mochi_state(&self, key: &QString) -> QString {
+        mochi_json_string(&format!("{}/cindy-dots/state.json", paths::state_home()), key)
     }
 
     fn mochi_set_wallpaper(&self, path: &QString) -> bool {
@@ -798,4 +801,14 @@ mod tests {
         assert_eq!(tty_color("m3surfaceContainer", &base), ink::GROUND);
         assert_eq!(tty_color("m3onPrimary", &base), ink::GROUND);
     }
+}
+
+/// Cindy-Dots JSON dosyasindan (settings.json / state.json) metin bir anahtar; yoksa bos.
+fn mochi_json_string(file: &str, key: &QString) -> QString {
+    let value = std::fs::read_to_string(file)
+        .ok()
+        .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
+        .and_then(|json| json.get(key.to_string()).and_then(|v| v.as_str()).map(str::to_string))
+        .unwrap_or_default();
+    qs(&value)
 }
