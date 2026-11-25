@@ -198,8 +198,8 @@ StyledRect {
 
             StyledSlider {
                 id: zoomSlider
-                implicitWidth: 80
-                implicitHeight: 8
+                implicitWidth: Colours.mochi ? Tokens.mochi.zoomWidth : 80
+                implicitHeight: Colours.mochi ? Tokens.mochi.knobSize : 8
                 from: 0.0
                 to: 1.0
                 value: (root.zoomLevel - 48) / (180 - 48)
@@ -260,6 +260,24 @@ StyledRect {
                 text: Math.round(FileOperations.progress.progress * 100) + "%"
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.label.medium
+            }
+        }
+
+        // MochiFile: vim hareketleri acikken kucuk cip
+        StyledRect {
+            visible: Colours.mochi && AppController.vimMotions
+            implicitHeight: Tokens.mochi.chipHeight
+            implicitWidth: vimText.implicitWidth + Tokens.padding.medium * 2
+            radius: height / 2
+            color: Colours.palette.m3surface
+            mochiLine: true
+
+            StyledText {
+                id: vimText
+                anchors.centerIn: parent
+                text: qsTr("vim")
+                color: Colours.palette.m3onSurface
+                font: Tokens.font.label.builders.small.weight(Font.Black).build()
             }
         }
 

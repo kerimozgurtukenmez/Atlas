@@ -42,7 +42,7 @@ T.Slider {
 
         StyledRect {
             id: remaining
-            visible: !Colours.tty
+            visible: !Colours.tty && !Colours.mochi
 
             anchors.left: handle.right
             anchors.right: parent.right
@@ -57,7 +57,7 @@ T.Slider {
         }
 
         StyledRect {
-            visible: !Colours.tty
+            visible: !Colours.tty && !Colours.mochi
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             anchors.rightMargin: 2
@@ -72,7 +72,7 @@ T.Slider {
 
         StyledRect {
             id: handle
-            visible: !Colours.tty
+            visible: !Colours.tty && !Colours.mochi
 
             anchors.left: filled.right
             anchors.verticalCenter: parent.verticalCenter
@@ -91,9 +91,44 @@ T.Slider {
             }
         }
 
+        // MochiFile: murekkep cizgili ray, mavi dolgu, beyaz topuz
+        StyledRect {
+            id: mochiTrack
+            visible: Colours.mochi
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            implicitHeight: Tokens.mochi.barHeight
+            radius: height / 2
+            color: Colours.palette.m3surfaceContainerHigh
+            mochiLine: true
+
+            Rectangle {
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.margins: parent.border.width
+                width: Math.max(height, (parent.width - parent.border.width * 2) * root.pos)
+                radius: height / 2
+                color: root.enabled ? Colours.palette.m3secondary : Colours.palette.m3outlineVariant
+            }
+        }
+
+        StyledRect {
+            visible: Colours.mochi
+            x: (parent.width - width) * root.pos
+            anchors.verticalCenter: parent.verticalCenter
+            implicitWidth: Tokens.mochi.knobSize
+            implicitHeight: Tokens.mochi.knobSize
+            radius: width / 2
+            color: Colours.palette.m3surface
+            mochiLine: true
+            mochiBorder: Tokens.mochi.line
+        }
+
         StyledRect {
             id: filled
-            visible: !Colours.tty
+            visible: !Colours.tty && !Colours.mochi
 
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter

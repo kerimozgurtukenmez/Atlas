@@ -487,8 +487,10 @@ MouseArea {
             StyledRect {
                 implicitWidth: 36
                 implicitHeight: 36
-                radius: Tokens.rounding.full
-                color: playBtnHover.containsMouse ? Colours.palette.m3primaryContainer : Colours.palette.m3primary
+                radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                mochiKey: true
+                mochiDown: playBtnHover.pressed
+                color: Colours.mochi ? Colours.palette.m3primary : (playBtnHover.containsMouse ? Colours.palette.m3primaryContainer : Colours.palette.m3primary)
 
                 MaterialIcon {
                     anchors.centerIn: parent

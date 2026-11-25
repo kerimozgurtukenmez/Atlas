@@ -490,8 +490,10 @@ MouseArea {
                 StyledRect {
                     implicitWidth: 90
                     implicitHeight: 38
-                    radius: Tokens.rounding.full
-                    color: cancelHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : "transparent"
+                    radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                    mochiKey: true
+                    mochiDown: cancelHover.pressed
+                    color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (cancelHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : "transparent")
 
                     StyledText {
                         anchors.centerIn: parent
@@ -518,8 +520,10 @@ MouseArea {
                 StyledRect {
                     implicitWidth: 96
                     implicitHeight: 38
-                    radius: Tokens.rounding.full
-                    color: doneHover.containsMouse ? Colours.palette.m3primaryContainer : Colours.palette.m3primary
+                    radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                    mochiKey: true
+                    mochiDown: doneHover.pressed
+                    color: Colours.mochi ? Colours.palette.m3primary : (doneHover.containsMouse ? Colours.palette.m3primaryContainer : Colours.palette.m3primary)
 
                     StyledText {
                         anchors.centerIn: parent

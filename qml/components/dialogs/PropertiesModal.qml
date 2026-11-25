@@ -234,8 +234,10 @@ MouseArea {
                                 StyledRect {
                                     implicitHeight: 28
                                     implicitWidth: changeText.implicitWidth + 20
-                                    radius: Tokens.rounding.full
-                                    color: changeHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Colours.tPalette.m3surfaceContainerHigh
+                                    radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                                    mochiKey: true
+                                    mochiDown: changeHover.pressed
+                                    color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (changeHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : Colours.tPalette.m3surfaceContainerHigh)
 
                                     StyledText {
                                         id: changeText

@@ -87,6 +87,7 @@ Item {
                             color: Colours.palette.m3onSurface
                             font: Colours.mochi ? Tokens.font.title.medium : Tokens.font.body.builders.large.weight(Font.Bold).build()
                             Layout.fillWidth: true
+                            elide: Text.ElideRight
                         }
                     }
 
@@ -111,8 +112,11 @@ Item {
                             StyledRect {
                                 width: tasksCol.width
                                 height: activeCol.implicitHeight + Tokens.padding.medium * 2
-                                radius: Tokens.rounding.medium
-                                color: Colours.tPalette.m3surfaceContainer
+                                radius: Colours.mochi ? Tokens.mochi.itemRadius : Tokens.rounding.medium
+                                // MochiFile: sticker kart
+                                mochiFrame: true
+                                mochiShadow: Tokens.mochi.keyShadow
+                                color: Colours.mochi ? Colours.palette.m3surface : Colours.tPalette.m3surfaceContainer
                                 visible: FileOperations.progress.running || CatboxUploader.isUploading
 
                                 ColumnLayout {
@@ -139,16 +143,18 @@ Item {
                                                 ? (qsTr("Uploading %1 to %2 (%3%)").arg(CatboxUploader.currentFileName).arg(CatboxUploader.currentService || "Cloud").arg(Math.round(CatboxUploader.uploadProgress * 100)))
                                                 : (FileOperations.progress.statusText || qsTr("In progress..."))
                                             color: Colours.palette.m3onSurface
-                                            font: Tokens.font.body.small
+                                            font: Colours.mochi ? Tokens.font.body.builders.small.weight(Font.Black).build() : Tokens.font.body.small
                                             Layout.fillWidth: true
                                             elide: Text.ElideRight
                                         }
 
                                         StyledRect {
-                                            implicitWidth: 26
-                                            implicitHeight: 26
-                                            radius: Tokens.rounding.full
-                                            color: cancelHover.containsMouse ? Colours.palette.m3errorContainer : "transparent"
+                                            implicitWidth: Colours.mochi ? Tokens.mochi.navKeyWidth : 26
+                                            implicitHeight: Colours.mochi ? Tokens.mochi.navKeyHeight - Tokens.mochi.keyShadow : 26
+                                            radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                                            mochiKey: true
+                                            mochiDown: cancelHover.pressed
+                                            color: Colours.mochi ? Colours.palette.m3errorContainer : (cancelHover.containsMouse ? Colours.palette.m3errorContainer : "transparent")
 
                                             MaterialIcon {
                                                 anchors.centerIn: parent
@@ -172,9 +178,16 @@ Item {
                                         }
                                     }
 
+                                    MochiProgress {
+                                        Layout.fillWidth: true
+                                        visible: Colours.mochi
+                                        value: CatboxUploader.isUploading ? CatboxUploader.uploadProgress : FileOperations.progress.progress
+                                    }
+
                                     // Progress Bar
                                     StyledRect {
                                         Layout.fillWidth: true
+                                        visible: !Colours.mochi
                                         implicitHeight: 6
                                         radius: Tokens.rounding.full
                                         color: Qt.alpha(Colours.palette.m3outline, 0.25)
@@ -224,8 +237,10 @@ Item {
 
                                     width: tasksCol.width
                                     height: compCol.implicitHeight + Tokens.padding.small * 2
-                                    radius: Tokens.rounding.medium
-                                    color: Colours.tPalette.m3surfaceContainer
+                                    radius: Colours.mochi ? Tokens.mochi.itemRadius : Tokens.rounding.medium
+                                    mochiLine: true
+                                    mochiBorderColour: Colours.palette.m3outlineVariant
+                                    color: Colours.mochi ? Colours.palette.m3surface : Colours.tPalette.m3surfaceContainer
 
                                     ColumnLayout {
                                         id: compCol
@@ -271,6 +286,7 @@ Item {
                                                 implicitHeight: 28
                                                 radius: Tokens.rounding.full
                                                 color: copyChipHover.containsMouse ? Colours.palette.m3primaryContainer : Colours.tPalette.m3surfaceContainerHigh
+                                                mochiLine: true
 
                                                 RowLayout {
                                                     id: copyChipRow
@@ -306,6 +322,7 @@ Item {
                                                 implicitHeight: 28
                                                 radius: Tokens.rounding.full
                                                 color: openChipHover.containsMouse ? Colours.palette.m3primaryContainer : Colours.tPalette.m3surfaceContainerHigh
+                                                mochiLine: true
 
                                                 RowLayout {
                                                     id: openChipRow
@@ -379,8 +396,10 @@ Item {
                             visible: FileOperations.completedTasks.length > 0
                             implicitWidth: 80
                             implicitHeight: 34
-                            radius: Tokens.rounding.full
-                            color: clearHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : "transparent"
+                            radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                            mochiKey: true
+                            mochiDown: clearHover.pressed
+                            color: Colours.mochi ? Colours.palette.m3surfaceContainerHigh : (clearHover.containsMouse ? Colours.tPalette.m3surfaceContainerHighest : "transparent")
 
                             StyledText {
                                 anchors.centerIn: parent
@@ -403,8 +422,10 @@ Item {
                         StyledRect {
                             implicitWidth: 80
                             implicitHeight: 34
-                            radius: Tokens.rounding.full
-                            color: doneHover.containsMouse ? Colours.palette.m3primaryContainer : Colours.palette.m3primary
+                            radius: Colours.mochi ? Tokens.mochi.keyRadius : Tokens.rounding.full
+                            mochiKey: true
+                            mochiDown: doneHover.pressed
+                            color: Colours.mochi ? Colours.palette.m3primary : (doneHover.containsMouse ? Colours.palette.m3primaryContainer : Colours.palette.m3primary)
 
                             StyledText {
                                 anchors.centerIn: parent
